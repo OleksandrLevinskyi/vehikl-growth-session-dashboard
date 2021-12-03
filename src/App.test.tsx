@@ -1,9 +1,18 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("Growth Sessions Dashboard App", () => {
+  test('renders the heading', () => {
+    render(<App/>);
+    const headingElement = screen.getByText(/GS Analytics Board/);
+    expect(headingElement).toBeInTheDocument();
+  });
+
+  test('renders the links', () => {
+    render(<App/>);
+    expect(screen.getByText(/All Time/)).toBeInTheDocument();
+    expect(screen.getByText(/Monthly/)).toBeInTheDocument();
+  });
+
 });

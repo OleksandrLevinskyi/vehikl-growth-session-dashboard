@@ -1,13 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import {Button} from "@chakra-ui/react";
+import {Heading} from "@chakra-ui/react";
 
 function App() {
   return (
-    <>
-      <Button/>
-    </>
+      <>
+          <Heading>GS Analytics Board</Heading>
+          All Time
+          Monthly
+      </>
   );
 }
 
