@@ -17,6 +17,8 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
+    environment:
+      - GF_SECURITY_ALLOW_EMBEDDING=true
     ports:
       - 3005:3000
     volumes:
