@@ -30,8 +30,7 @@ function NodeGraph() {
             .selectAll("line")
             .data(data.edges)
             .enter()
-            .append("line")
-            .attr("stroke-width", (d: any) => Math.sqrt(d.value));
+            .append("line");
 
         const node = svg.append("g")
             .attr("class", "nodes")
@@ -63,19 +62,21 @@ function NodeGraph() {
         drag_handler(node as any);
 
         node.append("text")
-            .text(function (d: any) {
-                return d.name;
-            })
+            .text((d: any) => d.name)
             .attr('x', 6)
             .attr('y', 3);
 
         node.append("title")
-            .text(function (d: any) {
-                return d.id;
-            });
+            .text((d: any) => d.id);
 
         const simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id((link: any) => link.id))
+            .force("link", d3.forceLink(...data.edges).distance((d: any) => {
+                return 1 / d.weight * 1000;
+            })
+                .id((link: any) => {
+                    console.log(link)
+                    return link.id
+                }))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -83,7 +84,8 @@ function NodeGraph() {
             .nodes(data.nodes)
             .on("tick", ticked);
 
-        simulation.force<any>("link")
+        simulation
+            .force<any>("link")
             .links(data.edges);
 
         function ticked() {
