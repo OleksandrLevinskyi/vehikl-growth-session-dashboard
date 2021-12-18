@@ -15,7 +15,7 @@ function NodeGraph() {
                     console.log(data);
                 },
                 (error) => {
-                    console.log('error fetching data');
+                    console.log('error fetching data: ', error);
                 }
             )
     }, []);
@@ -25,16 +25,13 @@ function NodeGraph() {
             width = +svg.attr("width"),
             height = +svg.attr("height");
 
-
-        console.log(data)
         const link = svg.append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(data.edges)
-            .enter().append("line")
-            .attr("stroke-width", function (d: any) {
-                return Math.sqrt(d.value);
-            });
+            .enter()
+            .append("line")
+            .attr("stroke-width", (d: any) => Math.sqrt(d.value));
 
         const node = svg.append("g")
             .attr("class", "nodes")
@@ -47,7 +44,6 @@ function NodeGraph() {
             .attr("r", 5)
             .attr("fill", "red");
 
-        // Create a drag handler and append it to the node object instead
         const drag_handler = d3.drag()
             .on("start", (event: any, d: any) => {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -66,7 +62,7 @@ function NodeGraph() {
 
         drag_handler(node as any);
 
-        const lables = node.append("text")
+        node.append("text")
             .text(function (d: any) {
                 return d.name;
             })
@@ -78,13 +74,6 @@ function NodeGraph() {
                 return d.id;
             });
 
-        const links = [...data.edges];
-        // links.map((e: any) => {
-        //     delete e.weight
-        // })
-        console.log(links)
-
-        //@ts-ignore
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id((link: any) => link.id))
             .force("charge", d3.forceManyBody())
@@ -99,26 +88,14 @@ function NodeGraph() {
 
         function ticked() {
             link
-                .attr("x1", function (d: any) {
-                    return d.source.x;
-                })
-                .attr("y1", function (d: any) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d: any) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d: any) {
-                    return d.target.y;
-                });
+                .attr("x1", (d: any) => d.source.x)
+                .attr("y1", (d: any) => d.source.y)
+                .attr("x2", (d: any) => d.target.x)
+                .attr("y2", (d: any) => d.target.y);
 
-            node
-                .attr("transform", function (d: any) {
-                    return "translate(" + d.x + "," + d.y + ")";
-                })
+            node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
         }
     }
-
 
     return (
         <>
@@ -129,6 +106,5 @@ function NodeGraph() {
         </>
     );
 }
-
 
 export default NodeGraph;
