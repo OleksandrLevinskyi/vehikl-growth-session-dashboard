@@ -22,15 +22,22 @@ function NodeGraph() {
 
     function loadNodeGraph() {
         const svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+            width = window.innerWidth*.9,
+            height = window.innerHeight*.9;
 
-        const link = svg.append("g")
+        svg.attr('width', width)
+            .attr('height',height);
+
+        console.log('===',svg.attr("width"),svg.attr("height"))
+
+        const edge = svg.append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(data.edges)
             .enter()
-            .append("line");
+            .append("g");
+
+        let link = edge.append("line");
 
         const node = svg.append("g")
             .attr("class", "nodes")
@@ -61,6 +68,11 @@ function NodeGraph() {
 
         drag_handler(node as any);
 
+        let edgeText = edge.append("text")
+            .text((d: any) => d.weight)
+            .attr('x', 6)
+            .attr('y', 3);
+
         node.append("text")
             .text((d: any) => d.name)
             .attr('x', 6)
@@ -71,10 +83,9 @@ function NodeGraph() {
 
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges).distance((d: any) => {
-                return 1 / d.weight * 1000;
+                return Math.sqrt(1 / d.weight) * 1000;
             })
                 .id((link: any) => {
-                    console.log(link)
                     return link.id
                 }))
             .force("charge", d3.forceManyBody())
@@ -96,6 +107,7 @@ function NodeGraph() {
                 .attr("y2", (d: any) => d.target.y);
 
             node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
+            edgeText.attr("transform", (d: any) => "translate(" + (d.source.x+d.target.x)/2 + "," + (d.source.y+d.target.y)/2 + ")")
         }
     }
 
@@ -104,7 +116,7 @@ function NodeGraph() {
             <Button onClick={() => {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
-            <svg width="900" height="600"/>
+            <svg/>
         </>
     );
 }
