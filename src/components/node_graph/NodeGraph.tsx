@@ -7,7 +7,7 @@ function NodeGraph() {
     const [data, setData] = useState<any>();
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/nodegraph')
+        fetch('http://localhost:8000/nodegraph')
             .then(res => res.json())
             .then(
                 (result) => {
@@ -21,16 +21,13 @@ function NodeGraph() {
     }, []);
 
     function loadNodeGraph() {
-        let svg = d3.select("svg"),
+        const svg = d3.select("svg"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
 
-        var simulation = d3.forceSimulation()
-            .force("link", d3.forceLink([...data.edges]))
-            .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(width / 2, height / 2));
 
-        var link = svg.append("g")
+        console.log(data)
+        const link = svg.append("g")
             .attr("class", "links")
             .selectAll("line")
             .data(data.edges)
@@ -39,26 +36,37 @@ function NodeGraph() {
                 return Math.sqrt(d.value);
             });
 
-        var node = svg.append("g")
+        const node = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
             .data(data.nodes)
             .enter()
             .append("g")
 
-        var circles = node.append("circle")
+        const circles = node.append("circle")
             .attr("r", 5)
             .attr("fill", "red");
 
         // Create a drag handler and append it to the node object instead
-        // var drag_handler = d3.drag()
-        //     .on("start", dragstarted)
-        //     .on("drag", dragged)
-        //     .on("end", dragended);
-        //
-        // drag_handler(node);
+        const drag_handler = d3.drag()
+            .on("start", (event: any, d: any) => {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            })
+            .on("drag", (event: any, d: any) => {
+                d.fx = event.x;
+                d.fy = event.y;
+            })
+            .on("end", (event: any, d: any) => {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            });
 
-        var lables = node.append("text")
+        drag_handler(node as any);
+
+        const lables = node.append("text")
             .text(function (d: any) {
                 return d.name;
             })
@@ -69,6 +77,18 @@ function NodeGraph() {
             .text(function (d: any) {
                 return d.id;
             });
+
+        const links = [...data.edges];
+        // links.map((e: any) => {
+        //     delete e.weight
+        // })
+        console.log(links)
+
+        //@ts-ignore
+        const simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id((link: any) => link.id))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
 
         simulation
             .nodes(data.nodes)
@@ -96,24 +116,6 @@ function NodeGraph() {
                 .attr("transform", function (d: any) {
                     return "translate(" + d.x + "," + d.y + ")";
                 })
-
-
-            function dragstarted(event: any, d: any) {
-                if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            }
-
-            function dragged(event: any, d: any) {
-                d.fx = event.x;
-                d.fy = event.y;
-            }
-
-            function dragended(event: any, d: any) {
-                if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }
         }
     }
 
@@ -123,7 +125,7 @@ function NodeGraph() {
             <Button onClick={() => {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
-            <svg width="960" height="600"/>
+            <svg width="900" height="600"/>
         </>
     );
 }
