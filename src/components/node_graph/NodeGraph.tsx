@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {Button} from "@chakra-ui/react";
 
 function NodeGraph() {
+    const transformMatrix = [1, 0, 0, 1, 0, 0];
     const [data, setData] = useState<any>();
 
     useEffect(() => {
@@ -20,15 +21,21 @@ function NodeGraph() {
             )
     }, []);
 
+    function inlineMatrix() {
+        return `matrix(${transformMatrix.join(' ')})`;
+    }
+
     function loadNodeGraph() {
-        const svg = d3.select("svg"),
-            width = window.innerWidth*.9,
-            height = window.innerHeight*.9;
+        let svg: any = d3.select("svg"),
+            width = window.innerWidth * .9,
+            height = window.innerHeight * .9;
 
         svg.attr('width', width)
-            .attr('height',height);
+            .attr('height', height);
 
-        console.log('===',svg.attr("width"),svg.attr("height"))
+        svg = svg.append('g')
+            .attr('transform', inlineMatrix())
+            .attr("class", "node-graph");
 
         const edge = svg.append("g")
             .attr("class", "links")
@@ -67,6 +74,10 @@ function NodeGraph() {
             });
 
         drag_handler(node as any);
+
+        const zoom = d3.zoom()
+            .on('zoom', (event: any) => svg.attr("transform", event.transform));
+        zoom(d3.select('svg'));
 
         let edgeText = edge.append("text")
             .text((d: any) => d.weight)
@@ -107,7 +118,7 @@ function NodeGraph() {
                 .attr("y2", (d: any) => d.target.y);
 
             node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
-            edgeText.attr("transform", (d: any) => "translate(" + (d.source.x+d.target.x)/2 + "," + (d.source.y+d.target.y)/2 + ")")
+            edgeText.attr("transform", (d: any) => "translate(" + (d.source.x + d.target.x) / 2 + "," + (d.source.y + d.target.y) / 2 + ")")
         }
     }
 
