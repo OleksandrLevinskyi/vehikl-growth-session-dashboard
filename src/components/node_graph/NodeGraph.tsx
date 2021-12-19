@@ -4,7 +4,6 @@ import {useEffect, useState} from "react";
 import {Button} from "@chakra-ui/react";
 
 function NodeGraph() {
-    const transformMatrix = [1, 0, 0, 1, 0, 0];
     const [data, setData] = useState<any>();
 
     useEffect(() => {
@@ -21,10 +20,6 @@ function NodeGraph() {
             )
     }, []);
 
-    function inlineMatrix() {
-        return `matrix(${transformMatrix.join(' ')})`;
-    }
-
     function loadNodeGraph() {
         let svg: any = d3.select("svg"),
             width = window.innerWidth * .9,
@@ -34,7 +29,6 @@ function NodeGraph() {
             .attr('height', height);
 
         svg = svg.append('g')
-            .attr('transform', inlineMatrix())
             .attr("class", "node-graph");
 
         const edge = svg.append("g")
