@@ -5,6 +5,7 @@ import {Button} from "@chakra-ui/react";
 
 function NodeGraph() {
     const [data, setData] = useState<any>();
+    const [nodeInfo, setNodeInfo] = useState<any>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -12,7 +13,13 @@ function NodeGraph() {
             .then(
                 (result) => {
                     setData(result);
-                    console.log(data);
+
+                    let nodeData = [...result.nodes].map((node: any) => {
+                        let a = getNodeInfo(node, result)
+                        console.log(a);
+                        return a;
+                    });
+                    setNodeInfo(nodeData);
                 },
                 (error) => {
                     console.log('error fetching data: ', error);
@@ -20,10 +27,12 @@ function NodeGraph() {
             )
     }, []);
 
+
     function loadNodeGraph() {
         let svg: any = d3.select("svg"),
             width = window.innerWidth * .9,
             height = window.innerHeight * .9;
+
 
         svg.attr('width', width)
             .attr('height', height);
@@ -56,9 +65,6 @@ function NodeGraph() {
             .attr('class', 'label')
             .attr('text-anchor', 'middle')
 
-        node.append("title")
-            .text((d: any) => d.id);
-
         const drag_handler = d3.drag()
             .on("start", (event: any, d: any) => {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -82,9 +88,7 @@ function NodeGraph() {
         zoom(d3.select('svg'));
 
         let edgeText = edge.append("text")
-            .text((d: any) => d.weight)
-            .attr('x', 6)
-            .attr('y', 3);
+            .text((d: any) => d.weight);
 
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges).distance((d: any) => {
@@ -114,6 +118,30 @@ function NodeGraph() {
             node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
             edgeText.attr("transform", (d: any) => "translate(" + (d.source.x + d.target.x) / 2 + "," + (d.source.y + d.target.y) / 2 + ")")
         }
+
+
+    }
+
+    function getNodeInfo(node: any, data:any) {
+        let id = node.id;
+
+        let summary = [...data.edges]
+            .filter((edge: any) => {
+                return edge.source === id || edge.target === id;
+            })
+            .map((edge: any) => {
+                return {'data': edge.source === id ? edge.target : edge.source, weight: edge.weight};
+            })
+            .sort((a, b) => b.weight - a.weight)
+            .map((neighboringNode: any) => {
+                let name = data.nodes
+                    .filter((node: any) => node.id === neighboringNode.data)[0].name ?? null;
+
+                return `${name}: ${neighboringNode.weight} time(s)`
+            })
+            .join('\n');
+
+        return `${node.name} mobbed with:\n============\n${summary}`;
     }
 
     return (
