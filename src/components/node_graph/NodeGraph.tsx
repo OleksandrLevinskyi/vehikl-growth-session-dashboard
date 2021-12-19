@@ -48,8 +48,16 @@ function NodeGraph() {
             .append("g")
 
         const circles = node.append("circle")
-            .attr("r", 5)
-            .attr("fill", "red");
+            .attr("r", 80)
+            .attr("fill", "blue");
+
+        node.append("text")
+            .text((d: any) => d.name)
+            .attr('class', 'label')
+            .attr('text-anchor', 'middle')
+
+        node.append("title")
+            .text((d: any) => d.id);
 
         const drag_handler = d3.drag()
             .on("start", (event: any, d: any) => {
@@ -78,17 +86,9 @@ function NodeGraph() {
             .attr('x', 6)
             .attr('y', 3);
 
-        node.append("text")
-            .text((d: any) => d.name)
-            .attr('x', 6)
-            .attr('y', 3);
-
-        node.append("title")
-            .text((d: any) => d.id);
-
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges).distance((d: any) => {
-                return Math.sqrt(1 / d.weight) * 1000;
+                return Math.sqrt(1 / d.weight) * 20000;
             })
                 .id((link: any) => {
                     return link.id
