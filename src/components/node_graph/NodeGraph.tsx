@@ -1,11 +1,22 @@
 import './NodeGraph.css';
 import * as d3 from 'd3';
 import {useEffect, useState} from "react";
-import {Button} from "@chakra-ui/react";
+import {
+    Button, Input,
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton,
+} from "@chakra-ui/react";
 
 function NodeGraph() {
     const [data, setData] = useState<any>();
-    const [nodeInfo, setNodeInfo] = useState<any>();
+    const [nodeData, setNodeData] = useState<any>();
+    const [isDrawerOpen, setIsDrawerOpen] = useState<any>();
+    const [selectedNodeData, setSelectedNodeData] = useState<string>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -15,11 +26,9 @@ function NodeGraph() {
                     setData(result);
 
                     let nodeData = [...result.nodes].map((node: any) => {
-                        let a = getNodeInfo(node, result)
-                        console.log(a);
-                        return a;
+                        return {'id':node.id,'data':getNodeInfo(node, result)}
                     });
-                    setNodeInfo(nodeData);
+                    setNodeData(nodeData);
                 },
                 (error) => {
                     console.log('error fetching data: ', error);
@@ -83,6 +92,14 @@ function NodeGraph() {
 
         drag_handler(node as any);
 
+        node.on('click', (event: any) => {
+            let selectedNodeId = event.target.__data__.id;
+            let a = nodeData.filter((node: any) => node.id === selectedNodeId)[0].data
+            console.log(a)
+            setSelectedNodeData(a);
+            setIsDrawerOpen(true)
+        })
+
         const zoom = d3.zoom()
             .on('zoom', (event: any) => svg.attr("transform", event.transform));
         zoom(d3.select('svg'));
@@ -118,11 +135,9 @@ function NodeGraph() {
             node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
             edgeText.attr("transform", (d: any) => "translate(" + (d.source.x + d.target.x) / 2 + "," + (d.source.y + d.target.y) / 2 + ")")
         }
-
-
     }
 
-    function getNodeInfo(node: any, data:any) {
+    function getNodeInfo(node: any, data: any) {
         let id = node.id;
 
         let summary = [...data.edges]
@@ -150,6 +165,21 @@ function NodeGraph() {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
             <svg/>
+            <Drawer
+                isOpen={isDrawerOpen}
+                placement='right'
+                onClose={() => setIsDrawerOpen(false)}
+            >
+                <DrawerOverlay/>
+                <DrawerContent>
+                    <DrawerCloseButton/>
+                    <DrawerHeader>Node Summary</DrawerHeader>
+
+                    <DrawerBody id={"drawerBody"}>
+                        {selectedNodeData}
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
         </>
     );
 }
