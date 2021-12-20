@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Button, Flex, Heading, Spacer} from "@chakra-ui/react";
+import {Button, Flex, Heading, Spacer, TabList, Tab, TabPanel, TabPanels, Tabs} from "@chakra-ui/react";
 import Panel from "./components/panel/Panel";
 import NodeGraph from "./components/node_graph/NodeGraph";
+import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
 
 function App() {
     const [text, setText] = useState(() => "");
@@ -18,15 +19,23 @@ function App() {
 
     return (
         <>
-            <Flex>
-                <Heading>GS Analytics Board</Heading>
-                <Spacer/>
-                <Button onClick={selectAllTime}>All Time</Button>
-                <Button onClick={selectMonthly}>Monthly</Button>
-            </Flex>
-            <NodeGraph/>
-            <iframe src="http://localhost:3005/d/IvJGVgTnk/new-dashboard?orgId=1&kiosk&theme=light" frameBorder="0"/>
-            {text}
+            <Heading>GS Analytics Board</Heading>
+            <Spacer/>
+            <Tabs>
+                <TabList>
+                    <Tab>All Time</Tab>
+                    <Tab>Node Graph</Tab>
+                </TabList>
+
+                <TabPanels>
+                    <TabPanel>
+                        <GrafanaDashboard/>
+                    </TabPanel>
+                    <TabPanel>
+                        <NodeGraph/>
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
         </>
     );
 }
