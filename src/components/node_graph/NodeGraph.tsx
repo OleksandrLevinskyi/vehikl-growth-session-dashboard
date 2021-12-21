@@ -15,8 +15,8 @@ import {
 function NodeGraph() {
     const [data, setData] = useState<any>();
     const [nodeData, setNodeData] = useState<any>();
-    const [isDrawerOpen, setIsDrawerOpen] = useState<any>();
-    const [selectedNodeData, setSelectedNodeData] = useState<string>();
+    const [isDrawerOpen, setIsDrawerOpen] = useState<any>(false);
+    const [selectedNodeData, setSelectedNodeData] = useState();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -26,7 +26,7 @@ function NodeGraph() {
                     setData(result);
 
                     let nodeData = [...result.nodes].map((node: any) => {
-                        return {'id':node.id,'data':getNodeInfo(node, result)}
+                        return {'id': node.id, 'data': getNodeInfo(node, result)}
                     });
                     setNodeData(nodeData);
                 },
@@ -35,6 +35,25 @@ function NodeGraph() {
                 }
             )
     }, []);
+
+
+    const CustomDrawer: React.FC = ({children}) => {
+        return (
+            <div>
+                <Drawer
+                    isOpen={isDrawerOpen}
+                    placement='right'
+                    onClose={() => setIsDrawerOpen(false)}
+                >
+                    <DrawerOverlay/>
+                    <DrawerContent>
+                        <DrawerCloseButton/>
+                        {children}
+                    </DrawerContent>
+                </Drawer>
+            </div>
+        )
+    }
 
 
     function loadNodeGraph() {
@@ -95,7 +114,7 @@ function NodeGraph() {
         node.on('click', (event: any) => {
             let selectedNodeId = event.target.__data__.id;
             let a = nodeData.filter((node: any) => node.id === selectedNodeId)[0].data
-            console.log(a)
+
             setSelectedNodeData(a);
             setIsDrawerOpen(true)
         })
@@ -164,22 +183,21 @@ function NodeGraph() {
             <Button onClick={() => {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
-            <svg/>
-            <Drawer
-                isOpen={isDrawerOpen}
-                placement='right'
-                onClose={() => setIsDrawerOpen(false)}
-            >
-                <DrawerOverlay/>
-                <DrawerContent>
-                    <DrawerCloseButton/>
-                    <DrawerHeader>Node Summary</DrawerHeader>
+            <Button onClick={() => {
+                setSelectedNodeData(data.nodes.map((n:any)=> n.name).join(' '));
+                setIsDrawerOpen(true)
+            }}>Filter By Specific Node</Button>
 
-                    <DrawerBody id={"drawerBody"}>
-                        {selectedNodeData}
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
+            <svg/>
+
+            <CustomDrawer>
+                <DrawerHeader>Node Summary</DrawerHeader>
+
+                <DrawerBody>
+                    {selectedNodeData}
+                </DrawerBody>
+            </CustomDrawer>
+
         </>
     );
 }
