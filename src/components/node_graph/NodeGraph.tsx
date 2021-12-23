@@ -164,14 +164,39 @@ function NodeGraph() {
         }
     }
 
+    function generateRadioButtons() {
+        return data.nodes
+            .map((node: any, key: number) => <span key={`span-${key}`}>
+                        <input type="radio" id={node.name}
+                               name="specific_node_filter"
+                               key={`radio-${key}`}/>
+                        <label htmlFor={node.name}
+                               key={`label-${key}`}>{node.name}</label>
+                        <br/>
+                    </span>)
+    }
+
     function getDrawerBody() {
         switch (currentDrawerType) {
             case DRAWER_TYPE.SPECIFIC_NODE:
-                return "specific node info"
+                return <span>
+                    {generateRadioButtons()}
+                    <Button onClick={()=>console.log('abc')}>Apply</Button>
+                </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
-                    selectedNodeSummary?.formatted_connections.map((connection: string, key:number) => <p key={key}>{connection}</p>) :
+                    selectedNodeSummary?.formatted_connections.map((connection: string, key: number) => <p
+                        key={key}>{connection}</p>) :
                     "no records";
+        }
+    }
+
+    function getDrawerHeader() {
+        switch (currentDrawerType) {
+            case DRAWER_TYPE.SPECIFIC_NODE:
+                return "Specific Node Filter";
+            default:
+                return selectedNodeSummary?.name;
         }
     }
 
@@ -188,7 +213,7 @@ function NodeGraph() {
             <svg/>
 
             <CustomDrawer>
-                <DrawerHeader>{selectedNodeSummary?.name}</DrawerHeader>
+                <DrawerHeader>{getDrawerHeader()}</DrawerHeader>
 
                 <DrawerBody>
                     {getDrawerBody()}
