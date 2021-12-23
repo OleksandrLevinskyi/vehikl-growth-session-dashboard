@@ -11,12 +11,21 @@ import {
     DrawerContent,
     DrawerCloseButton,
 } from "@chakra-ui/react";
+import {Graph} from "./utils/Graph";
+import {Connection, NodeSummary} from "./utils/NodeSummary";
+
+const DRAWER_TYPE = {
+    DEFAULT: 'DEFAULT',
+    SPECIFIC_NODE: 'SPECIFIC_NODE',
+    MULTIPLE_NODES: 'MULTIPLE_NODES'
+}
 
 function NodeGraph() {
     const [data, setData] = useState<any>();
-    const [nodeData, setNodeData] = useState<any>();
+    const [nodeData, setNodeData] = useState<Array<NodeSummary>>();
+    const [formattedElements, setFormattedElements] = useState<any>();
     const [isDrawerOpen, setIsDrawerOpen] = useState<any>(false);
-    const [selectedNodeData, setSelectedNodeData] = useState();
+    const [selectedNodeData, setSelectedNodeData] = useState<NodeSummary>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -25,10 +34,10 @@ function NodeGraph() {
                 (result) => {
                     setData(result);
 
-                    let nodeData = [...result.nodes].map((node: any) => {
-                        return {'id': node.id, 'data': getNodeInfo(node, result)}
-                    });
+                    let nodeData = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
                     setNodeData(nodeData);
+
+                    console.log(nodeData)
                 },
                 (error) => {
                     console.log('error fetching data: ', error);
@@ -54,7 +63,6 @@ function NodeGraph() {
             </div>
         )
     }
-
 
     function loadNodeGraph() {
         let svg: any = d3.select("svg"),
@@ -113,8 +121,9 @@ function NodeGraph() {
 
         node.on('click', (event: any) => {
             let selectedNodeId = event.target.__data__.id;
-            let a = nodeData.filter((node: any) => node.id === selectedNodeId)[0].data
+            let a = nodeData!.filter((node: any) => node.id === selectedNodeId)[0]
 
+            console.log(a)
             setSelectedNodeData(a);
             setIsDrawerOpen(true)
         })
@@ -156,48 +165,25 @@ function NodeGraph() {
         }
     }
 
-    function getNodeInfo(node: any, data: any) {
-        let id = node.id;
-
-        let summary = [...data.edges]
-            .filter((edge: any) => {
-                return edge.source === id || edge.target === id;
-            })
-            .map((edge: any) => {
-                return {'data': edge.source === id ? edge.target : edge.source, weight: edge.weight};
-            })
-            .sort((a, b) => b.weight - a.weight)
-            .map((neighboringNode: any) => {
-                let name = data.nodes
-                    .filter((node: any) => node.id === neighboringNode.data)[0].name ?? null;
-
-                return `${name}: ${neighboringNode.weight} time(s)`
-            })
-            .join('\n');
-
-        return `${node.name} mobbed with:\n============\n${summary}`;
-    }
-
     return (
         <>
             <Button onClick={() => {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
-            <Button onClick={() => {
-                setSelectedNodeData(data.nodes.map((n:any)=> n.name).join(' '));
-                setIsDrawerOpen(true)
-            }}>Filter By Specific Node</Button>
 
             <svg/>
 
             <CustomDrawer>
-                <DrawerHeader>Node Summary</DrawerHeader>
+                <DrawerHeader>{selectedNodeData?.name}</DrawerHeader>
 
                 <DrawerBody>
-                    {selectedNodeData}
+                    {
+                        selectedNodeData?.formatted_connections.length! > 0 ?
+                            selectedNodeData?.formatted_connections.map((connection: string) => <p>{connection}</p>) :
+                            "no records"
+                    }
                 </DrawerBody>
             </CustomDrawer>
-
         </>
     );
 }
