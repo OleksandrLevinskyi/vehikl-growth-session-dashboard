@@ -44,25 +44,6 @@ function NodeGraph() {
             )
     }, []);
 
-
-    const CustomDrawer: React.FC = ({children}) => {
-        return (
-            <div>
-                <Drawer
-                    isOpen={isDrawerOpen}
-                    placement='right'
-                    onClose={() => setIsDrawerOpen(false)}
-                >
-                    <DrawerOverlay/>
-                    <DrawerContent>
-                        <DrawerCloseButton/>
-                        {children}
-                    </DrawerContent>
-                </Drawer>
-            </div>
-        )
-    }
-
     function loadNodeGraph() {
         let svg: any = d3.select("svg"),
             width = window.innerWidth * .9,
@@ -181,7 +162,7 @@ function NodeGraph() {
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
                     {generateRadioButtons()}
-                    <Button onClick={()=>console.log('abc')}>Apply</Button>
+                    <Button onClick={() => console.log('abc')}>Apply</Button>
                 </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
@@ -212,13 +193,21 @@ function NodeGraph() {
 
             <svg/>
 
-            <CustomDrawer>
-                <DrawerHeader>{getDrawerHeader()}</DrawerHeader>
+            <Drawer
+                isOpen={isDrawerOpen}
+                placement='right'
+                onClose={() => setIsDrawerOpen(false)}
+            >
+                <DrawerOverlay/>
+                <DrawerContent>
+                    <DrawerCloseButton/>
+                    <DrawerHeader>{getDrawerHeader()}</DrawerHeader>
 
-                <DrawerBody>
-                    {getDrawerBody()}
-                </DrawerBody>
-            </CustomDrawer>
+                    <DrawerBody>
+                        {getDrawerBody()}
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
         </>
     );
 }
