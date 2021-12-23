@@ -40,10 +40,15 @@ function NodeGraph() {
             )
     }, []);
 
-    function loadNodeGraph() {
+    function loadNodeGraph(data:any) {
+        d3.select("svg").remove();
+        d3.select('#svg-container').append('svg');
+
         let svg: any = d3.select("svg"),
             width = window.innerWidth * .9,
             height = window.innerHeight * .9;
+
+        console.log(svg)
 
         svg.attr('width', width)
             .attr('height', height);
@@ -143,14 +148,14 @@ function NodeGraph() {
     return (
         <>
             <Button onClick={() => {
-                loadNodeGraph()
+                loadNodeGraph(data)
             }}>Get Data + Create SVG</Button>
             <Button onClick={() => {
                 setIsDrawerOpen(true)
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
             }}>Filter By Specific Node</Button>
 
-            <svg/>
+            <span id="svg-container"></span>
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
