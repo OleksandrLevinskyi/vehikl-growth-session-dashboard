@@ -36,11 +36,9 @@ function NodeGraph() {
 
                     let nodeData = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
                     setNodeData(nodeData);
-
-                    console.log(nodeData)
                 },
                 (error) => {
-                    console.log('error fetching data: ', error);
+                    console.error('error fetching data: ', error);
                 }
             )
     }, []);
@@ -123,7 +121,6 @@ function NodeGraph() {
             let selectedNodeId = event.target.__data__.id;
             let a = nodeData!.filter((node: any) => node.id === selectedNodeId)[0]
 
-            console.log(a)
             setSelectedNodeData(a);
             setIsDrawerOpen(true)
         })
@@ -165,6 +162,12 @@ function NodeGraph() {
         }
     }
 
+    function getDrawerContents() {
+        return selectedNodeData?.formatted_connections.length! > 0 ?
+            selectedNodeData?.formatted_connections.map((connection: string, key:number) => <p key={key}>{connection}</p>) :
+            "no records";
+    }
+
     return (
         <>
             <Button onClick={() => {
@@ -178,9 +181,7 @@ function NodeGraph() {
 
                 <DrawerBody>
                     {
-                        selectedNodeData?.formatted_connections.length! > 0 ?
-                            selectedNodeData?.formatted_connections.map((connection: string) => <p>{connection}</p>) :
-                            "no records"
+                        getDrawerContents()
                     }
                 </DrawerBody>
             </CustomDrawer>

@@ -6,17 +6,6 @@ import NodeGraph from "./components/node_graph/NodeGraph";
 import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
 
 function App() {
-    const [text, setText] = useState(() => "");
-
-    function selectAllTime() {
-        console.log('')
-        setText("all time option is selected")
-    }
-
-    function selectMonthly() {
-        setText("monthly option is selected")
-    }
-
     return (
         <>
             <Heading>GS Analytics Board</Heading>
