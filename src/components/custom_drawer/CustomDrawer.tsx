@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './CustomDrawer.css';
 import {
     Button,
@@ -10,6 +10,7 @@ import {
     DrawerOverlay
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
+import {NodeSummary} from "../node_graph/utils/NodeSummary";
 
 function CustomDrawer({
                           data,
@@ -17,9 +18,12 @@ function CustomDrawer({
                           selectedNodeSummary,
                           isDrawerOpen,
                           setIsDrawerOpen,
-                          specificNodeToFilter,
-                          setSpecificNodeToFilter
+                          loadNewNodeGraph,
+                          nodeSummaries
                       }: any) {
+
+    const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number>();
+
     function getDrawerHeader() {
         switch (currentDrawerType) {
             case DRAWER_TYPE.SPECIFIC_NODE:
@@ -34,7 +38,7 @@ function CustomDrawer({
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
                     {generateRadioButtons()}
-                    <Button onClick={() => console.log(specificNodeToFilter)}>Apply</Button>
+                    <Button onClick={() => filterDataBySpecificNodeFilterSelection()}>Apply</Button>
                 </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
@@ -50,11 +54,17 @@ function CustomDrawer({
                         <input type="radio" id={node.id}
                                name="specific_node_filter"
                                key={`radio-${key}`}
-                               onClick={()=>setSpecificNodeToFilter(node.id)}/>
+                               onClick={() => setSpecificNodeIdToFilterBy(node.id)}/>
                         <label htmlFor={node.id}
                                key={`label-${key}`}>{node.name}</label>
                         <br/>
                     </span>)
+    }
+
+    function filterDataBySpecificNodeFilterSelection() {
+        let newEdges = nodeSummaries
+            .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy);
+        console.log(newEdges)
     }
 
     return (

@@ -19,10 +19,9 @@ function NodeGraph() {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
 
-    const [nodeSummaries, setSelectedNodeSummaries] = useState<Array<NodeSummary>>();
+    const [nodeSummaries, setNodeSummaries] = useState<Array<NodeSummary>>();
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
-    const [specificNodeToFilter, setSpecificNodeToFilter] = useState<number>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -32,7 +31,7 @@ function NodeGraph() {
                     setData(result);
 
                     let nodeSummaries = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
-                    setSelectedNodeSummaries(nodeSummaries);
+                    setNodeSummaries(nodeSummaries);
                 },
                 (error) => {
                     console.error('error fetching data: ', error);
@@ -40,15 +39,13 @@ function NodeGraph() {
             )
     }, []);
 
-    function loadNodeGraph(data:any) {
+    function loadNewNodeGraph(data:any) {
         d3.select("svg").remove();
         d3.select('#svg-container').append('svg');
 
         let svg: any = d3.select("svg"),
             width = window.innerWidth * .9,
             height = window.innerHeight * .9;
-
-        console.log(svg)
 
         svg.attr('width', width)
             .attr('height', height);
@@ -148,7 +145,7 @@ function NodeGraph() {
     return (
         <>
             <Button onClick={() => {
-                loadNodeGraph(data)
+                loadNewNodeGraph(data)
             }}>Get Data + Create SVG</Button>
             <Button onClick={() => {
                 setIsDrawerOpen(true)
@@ -159,8 +156,7 @@ function NodeGraph() {
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
-                          specificNodeToFilter={specificNodeToFilter}
-                          setSpecificNodeToFilter={setSpecificNodeToFilter}/>
+                          loadNewNodeGraph={loadNewNodeGraph} nodeSummaries={nodeSummaries}/>
         </>
     );
 }
