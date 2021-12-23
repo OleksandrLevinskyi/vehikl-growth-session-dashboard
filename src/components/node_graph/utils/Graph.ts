@@ -13,12 +13,12 @@ export class Graph {
         let connections = [...this.data.edges]
             .filter((edge: any) => edge.source === id || edge.target === id)
             .map((edge: any): Connection => {
-                return {name: edge.source === id ? edge.target : edge.source, weight: edge.weight};
+                return {id: edge.source === id ? edge.target : edge.source, name: "", weight: edge.weight};
             })
             .sort((a, b) => b.weight - a.weight);
 
         connections.forEach((connection: Connection) => {
-            connection.name = this.data.nodes.filter((node: any) => node.id === connection.name)[0].name ?? null;
+            connection.name = this.data.nodes.filter((node: any) => node.id === connection.id)[0].name ?? "";
         });
 
         return new NodeSummary(node.id, node.name, connections);

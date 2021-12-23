@@ -10,7 +10,7 @@ import {
     DrawerOverlay
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
-import {NodeSummary} from "../node_graph/utils/NodeSummary";
+import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
 
 function CustomDrawer({
                           data,
@@ -38,7 +38,7 @@ function CustomDrawer({
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
                     {generateRadioButtons()}
-                    <Button onClick={() => filterDataBySpecificNodeFilterSelection()}>Apply</Button>
+                    <Button onClick={() => loadNewNodeGraph(filterDataBySpecificNodeFilterSelection())}>Apply</Button>
                 </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
@@ -62,9 +62,18 @@ function CustomDrawer({
     }
 
     function filterDataBySpecificNodeFilterSelection() {
-        let newEdges = nodeSummaries
-            .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy);
-        console.log(newEdges)
+        let filteredNodeSummary = nodeSummaries
+            .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy)[0];
+
+        let edges: any = [],
+            nodes = [{id: filteredNodeSummary.id, name: filteredNodeSummary.name}];
+
+        filteredNodeSummary.connections.forEach(({id, name, weight}: Connection) => {
+            nodes.push({id, name});
+            edges.push({source: specificNodeIdToFilterBy, target: id, weight});
+        });
+
+        return {nodes, edges};
     }
 
     return (
