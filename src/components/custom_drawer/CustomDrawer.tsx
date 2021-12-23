@@ -47,11 +47,11 @@ function CustomDrawer({
     function generateRadioButtons() {
         return data.nodes
             .map((node: any, key: number) => <span key={`span-${key}`}>
-                        <input type="radio" id={node.name}
+                        <input type="radio" id={node.id}
                                name="specific_node_filter"
                                key={`radio-${key}`}
                                onClick={()=>setSpecificNodeToFilter(node.id)}/>
-                        <label htmlFor={node.name}
+                        <label htmlFor={node.id}
                                key={`label-${key}`}>{node.name}</label>
                         <br/>
                     </span>)

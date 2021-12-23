@@ -45,7 +45,6 @@ function NodeGraph() {
             width = window.innerWidth * .9,
             height = window.innerHeight * .9;
 
-
         svg.attr('width', width)
             .attr('height', height);
 
