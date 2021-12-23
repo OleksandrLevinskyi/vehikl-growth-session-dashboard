@@ -13,8 +13,9 @@ import {
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
 import {Connection, NodeSummary} from "./utils/NodeSummary";
+import CustomDrawer from "../custom_drawer/CustomDrawer";
 
-const DRAWER_TYPE = {
+export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
     SPECIFIC_NODE: 'SPECIFIC_NODE',
     MULTIPLE_NODES: 'MULTIPLE_NODES'
@@ -145,42 +146,6 @@ function NodeGraph() {
         }
     }
 
-    function generateRadioButtons() {
-        return data.nodes
-            .map((node: any, key: number) => <span key={`span-${key}`}>
-                        <input type="radio" id={node.name}
-                               name="specific_node_filter"
-                               key={`radio-${key}`}/>
-                        <label htmlFor={node.name}
-                               key={`label-${key}`}>{node.name}</label>
-                        <br/>
-                    </span>)
-    }
-
-    function getDrawerBody() {
-        switch (currentDrawerType) {
-            case DRAWER_TYPE.SPECIFIC_NODE:
-                return <span>
-                    {generateRadioButtons()}
-                    <Button onClick={() => console.log('abc')}>Apply</Button>
-                </span>
-            default:
-                return selectedNodeSummary?.formatted_connections.length! > 0 ?
-                    selectedNodeSummary?.formatted_connections.map((connection: string, key: number) => <p
-                        key={key}>{connection}</p>) :
-                    "no records";
-        }
-    }
-
-    function getDrawerHeader() {
-        switch (currentDrawerType) {
-            case DRAWER_TYPE.SPECIFIC_NODE:
-                return "Specific Node Filter";
-            default:
-                return selectedNodeSummary?.name;
-        }
-    }
-
     return (
         <>
             <Button onClick={() => {
@@ -193,21 +158,7 @@ function NodeGraph() {
 
             <svg/>
 
-            <Drawer
-                isOpen={isDrawerOpen}
-                placement='right'
-                onClose={() => setIsDrawerOpen(false)}
-            >
-                <DrawerOverlay/>
-                <DrawerContent>
-                    <DrawerCloseButton/>
-                    <DrawerHeader>{getDrawerHeader()}</DrawerHeader>
-
-                    <DrawerBody>
-                        {getDrawerBody()}
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
+            <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary} isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}/>
         </>
     );
 }
