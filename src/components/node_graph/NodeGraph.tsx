@@ -2,14 +2,7 @@ import './NodeGraph.css';
 import * as d3 from 'd3';
 import {useEffect, useState} from "react";
 import {
-    Button, Input,
-    Drawer,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
+    Button
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
 import {Connection, NodeSummary} from "./utils/NodeSummary";
@@ -28,6 +21,8 @@ function NodeGraph() {
 
     const [nodeSummaries, setSelectedNodeSummaries] = useState<Array<NodeSummary>>();
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
+
+    const [specificNodeToFilter, setSpecificNodeToFilter] = useState<number>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -158,7 +153,10 @@ function NodeGraph() {
 
             <svg/>
 
-            <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary} isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}/>
+            <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
+                          isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
+                          specificNodeToFilter={specificNodeToFilter}
+                          setSpecificNodeToFilter={setSpecificNodeToFilter}/>
         </>
     );
 }

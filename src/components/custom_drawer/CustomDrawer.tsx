@@ -11,17 +11,22 @@ import {
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
 
-function CustomDrawer({data, currentDrawerType, selectedNodeSummary, isDrawerOpen, setIsDrawerOpen}: any) {
-    function generateRadioButtons() {
-        return data.nodes
-            .map((node: any, key: number) => <span key={`span-${key}`}>
-                        <input type="radio" id={node.name}
-                               name="specific_node_filter"
-                               key={`radio-${key}`}/>
-                        <label htmlFor={node.name}
-                               key={`label-${key}`}>{node.name}</label>
-                        <br/>
-                    </span>)
+function CustomDrawer({
+                          data,
+                          currentDrawerType,
+                          selectedNodeSummary,
+                          isDrawerOpen,
+                          setIsDrawerOpen,
+                          specificNodeToFilter,
+                          setSpecificNodeToFilter
+                      }: any) {
+    function getDrawerHeader() {
+        switch (currentDrawerType) {
+            case DRAWER_TYPE.SPECIFIC_NODE:
+                return "Specific Node Filter";
+            default:
+                return selectedNodeSummary?.name;
+        }
     }
 
     function getDrawerBody() {
@@ -29,7 +34,7 @@ function CustomDrawer({data, currentDrawerType, selectedNodeSummary, isDrawerOpe
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
                     {generateRadioButtons()}
-                    <Button onClick={() => console.log('abc')}>Apply</Button>
+                    <Button onClick={() => console.log(specificNodeToFilter)}>Apply</Button>
                 </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
@@ -39,13 +44,17 @@ function CustomDrawer({data, currentDrawerType, selectedNodeSummary, isDrawerOpe
         }
     }
 
-    function getDrawerHeader() {
-        switch (currentDrawerType) {
-            case DRAWER_TYPE.SPECIFIC_NODE:
-                return "Specific Node Filter";
-            default:
-                return selectedNodeSummary?.name;
-        }
+    function generateRadioButtons() {
+        return data.nodes
+            .map((node: any, key: number) => <span key={`span-${key}`}>
+                        <input type="radio" id={node.name}
+                               name="specific_node_filter"
+                               key={`radio-${key}`}
+                               onClick={()=>setSpecificNodeToFilter(node.id)}/>
+                        <label htmlFor={node.name}
+                               key={`label-${key}`}>{node.name}</label>
+                        <br/>
+                    </span>)
     }
 
     return (
