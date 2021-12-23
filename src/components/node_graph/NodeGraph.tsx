@@ -22,10 +22,11 @@ const DRAWER_TYPE = {
 
 function NodeGraph() {
     const [data, setData] = useState<any>();
-    const [nodeData, setNodeData] = useState<Array<NodeSummary>>();
-    const [formattedElements, setFormattedElements] = useState<any>();
-    const [isDrawerOpen, setIsDrawerOpen] = useState<any>(false);
-    const [selectedNodeData, setSelectedNodeData] = useState<NodeSummary>();
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
+
+    const [nodeSummaries, setSelectedNodeSummaries] = useState<Array<NodeSummary>>();
+    const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
@@ -34,8 +35,8 @@ function NodeGraph() {
                 (result) => {
                     setData(result);
 
-                    let nodeData = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
-                    setNodeData(nodeData);
+                    let nodeSummaries = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
+                    setSelectedNodeSummaries(nodeSummaries);
                 },
                 (error) => {
                     console.error('error fetching data: ', error);
@@ -119,10 +120,11 @@ function NodeGraph() {
 
         node.on('click', (event: any) => {
             let selectedNodeId = event.target.__data__.id;
-            let a = nodeData!.filter((node: any) => node.id === selectedNodeId)[0]
+            let a = nodeSummaries!.filter((node: any) => node.id === selectedNodeId)[0]
 
-            setSelectedNodeData(a);
+            setSelectedNodeSummary(a);
             setIsDrawerOpen(true)
+            setCurrentDrawerType(DRAWER_TYPE.DEFAULT)
         })
 
         const zoom = d3.zoom()
@@ -162,10 +164,15 @@ function NodeGraph() {
         }
     }
 
-    function getDrawerContents() {
-        return selectedNodeData?.formatted_connections.length! > 0 ?
-            selectedNodeData?.formatted_connections.map((connection: string, key:number) => <p key={key}>{connection}</p>) :
-            "no records";
+    function getDrawerBody() {
+        switch (currentDrawerType) {
+            case DRAWER_TYPE.SPECIFIC_NODE:
+                return "specific node info"
+            default:
+                return selectedNodeSummary?.formatted_connections.length! > 0 ?
+                    selectedNodeSummary?.formatted_connections.map((connection: string, key:number) => <p key={key}>{connection}</p>) :
+                    "no records";
+        }
     }
 
     return (
@@ -173,16 +180,18 @@ function NodeGraph() {
             <Button onClick={() => {
                 loadNodeGraph()
             }}>Get Data + Create SVG</Button>
+            <Button onClick={() => {
+                setIsDrawerOpen(true)
+                setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
+            }}>Filter By Specific Node</Button>
 
             <svg/>
 
             <CustomDrawer>
-                <DrawerHeader>{selectedNodeData?.name}</DrawerHeader>
+                <DrawerHeader>{selectedNodeSummary?.name}</DrawerHeader>
 
                 <DrawerBody>
-                    {
-                        getDrawerContents()
-                    }
+                    {getDrawerBody()}
                 </DrawerBody>
             </CustomDrawer>
         </>
