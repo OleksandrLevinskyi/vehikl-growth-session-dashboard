@@ -2,34 +2,41 @@ import React, {useState} from 'react';
 import './GrafanaDashboard.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {DateTime} from 'luxon'
+
+
+const DATE_FORMAT = 'yyyy-MM-dd'
 
 function GrafanaDashboard() {
-    const [startDate, setStartDate] = useState(new Date('2020-05-21'));
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState<DateTime>(DateTime.local(2020, 5, 21));
+    const [endDate, setEndDate] = useState<DateTime | null>();
 
-    const onChange = (dates: any) => {
+    const onChange = (dates: Array<Date | null>) => {
         const [start, end] = dates;
-        setStartDate(start);
-        setEndDate(end)
-
-        console.log(start.getTime())
+        setStartDate(DateTime.fromJSDate(start!));
+        setEndDate(end ? DateTime.fromJSDate(end) : null);
     };
 
+    const endDateQP = (date: DateTime | null = DateTime.local()) => {
+        return `${(date ? date : DateTime.local()).toFormat(DATE_FORMAT)}`
+    }
     return (
         <>
             <DatePicker
-                selected={startDate}
+                selected={startDate.toJSDate()}
                 onChange={onChange}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={startDate.toJSDate()}
+                endDate={endDate ? endDate.toJSDate() : null}
                 selectsRange
                 inline
             />
             <iframe
-                src={`http://localhost:3005/d/ndxFSP07k/stats?orgId=1&var-from=${startDate.toISOString().split('T')[0]}&var-to=${(endDate ? endDate : startDate).toISOString().split('T')[0]}&from=${startDate.getTime()}&to=${endDate ? endDate.getTime() : 'now'}&theme=light`}
+                src={`http://localhost:3005/d/ndxFSP07k/stats?orgId=1&var-from=${startDate.toFormat(DATE_FORMAT)}&var-to=${endDateQP(endDate)}&from=${startDate.toMillis()}&to=${endDate ? endDate.toMillis() : 'now'}&theme=light`}
                 frameBorder="0"/>
         </>
     );
 }
+
+
 
 export default GrafanaDashboard;
