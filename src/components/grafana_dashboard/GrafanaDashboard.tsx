@@ -16,17 +16,14 @@ import {
 import moment from "moment";
 
 
-const DATE_FORMAT = 'yyyy-MM-dd'
-export const MIN_DATE = moment().year(2020).month(4).date(21);
+export const DATE_FORMAT = 'YYYY-MM-DD'
+export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().add(1, 'month')
 
 function GrafanaDashboard() {
-    const [startDate, setStartDate] = useState<any>(moment().year(2020).month(4).date(21));
-    const [endDate, setEndDate] = useState<DateTime | null>();
+    const [startDate, setStartDate] = useState(MIN_DATE);
+    const [endDate, setEndDate] = useState(MAX_DATE);
 
-    const endDateQP = (date: DateTime | null = DateTime.local()) => {
-        return `${(date ? date : DateTime.local()).toFormat(DATE_FORMAT)}`
-    }
     return (
         <>
             <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>

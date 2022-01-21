@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import 'react-dates/initialize';
 import {DateRangePicker, SingleDatePicker, DayPickerRangeController, FocusedInputShape} from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
-import {MAX_DATE, MIN_DATE} from "../grafana_dashboard/GrafanaDashboard";
+import {DATE_FORMAT, MAX_DATE, MIN_DATE} from "../grafana_dashboard/GrafanaDashboard";
 
 type CustomDatePickerProps = { startDate: any, setStartDate: any, endDate: any, setEndDate: any }
 
