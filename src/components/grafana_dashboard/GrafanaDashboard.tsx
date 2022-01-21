@@ -13,33 +13,27 @@ import {
     DrawerHeader,
     DrawerOverlay
 } from "@chakra-ui/react";
+import moment from "moment";
 
 
 const DATE_FORMAT = 'yyyy-MM-dd'
+export const MIN_DATE = moment().year(2020).month(4).date(21);
+export const MAX_DATE = moment().add(1, 'month')
 
 function GrafanaDashboard() {
-    const [startDate, setStartDate] = useState<DateTime>(DateTime.local(2020, 5, 21));
+    const [startDate, setStartDate] = useState<any>(moment().year(2020).month(4).date(21));
     const [endDate, setEndDate] = useState<DateTime | null>();
-    const [filtersOpen, setFiltersOpen] = useState(false);
-
-    const onChange = (dates: Array<Date | null>) => {
-        const [start, end] = dates;
-        setStartDate(DateTime.fromJSDate(start!));
-        setEndDate(end ? DateTime.fromJSDate(end) : null);
-    };
 
     const endDateQP = (date: DateTime | null = DateTime.local()) => {
         return `${(date ? date : DateTime.local()).toFormat(DATE_FORMAT)}`
     }
     return (
         <>
-            <Button onClick={()=>setFiltersOpen(!filtersOpen)}>Open Filters</Button>
+            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
 
-            <CustomDatePicker/>
-
-            <iframe
-                src={`http://localhost:3005/d/ndxFSP07k/stats?orgId=1&var-from=${startDate.toFormat(DATE_FORMAT)}&var-to=${endDateQP(endDate)}&from=${startDate.toMillis()}&to=${endDate ? endDate.toMillis() : 'now'}&theme=light`}
-                frameBorder="0"/>
+            {/*<iframe*/}
+            {/*    src={`http://localhost:3005/d/ndxFSP07k/stats?orgId=1&var-from=${startDate.toFormat(DATE_FORMAT)}&var-to=${endDateQP(endDate)}&from=${startDate.toMillis()}&to=${endDate ? endDate.toMillis() : 'now'}&theme=light`}*/}
+            {/*    frameBorder="0"/>*/}
         </>
     );
 }
