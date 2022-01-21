@@ -40,10 +40,10 @@ function NodeGraph() {
     }, []);
 
     function loadNewNodeGraph(data:any) {
-        d3.select("svg").remove();
+        d3.select('#svg-container').selectChild().remove();
         d3.select('#svg-container').append('svg');
 
-        let svg: any = d3.select("svg"),
+        let svg: any = d3.select("#svg-container").selectChild(),
             width = window.innerWidth * .9,
             height = window.innerHeight * .9;
 

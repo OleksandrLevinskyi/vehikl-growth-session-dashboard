@@ -1,18 +1,7 @@
 import React, {useState} from 'react';
 import './GrafanaDashboard.css';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import {DateTime} from 'luxon';
+import 'react-dates/lib/css/_datepicker.css';
 import {CustomDatePicker} from '../custom_date_picker/CustomDatePicker';
-import {
-    Button,
-    Drawer,
-    DrawerBody,
-    DrawerCloseButton,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay
-} from "@chakra-ui/react";
 import moment, {Moment} from "moment";
 
 
@@ -32,7 +21,7 @@ function GrafanaDashboard() {
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
             to = dateToUnixTimeStamp(endDate);
-        return `${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=light`;
+        return `${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=light&kiosk`;
     }
 
     const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
@@ -41,8 +30,7 @@ function GrafanaDashboard() {
 
     return (
         <>
-            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
-                              setEndDate={setEndDate}/>
+            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
 
             <iframe src={getDashboardLink()}/>
         </>
