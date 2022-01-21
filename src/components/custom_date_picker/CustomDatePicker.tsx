@@ -25,16 +25,16 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
     return (<>
         <DateRangePicker
             {...props}
-            startDate={startDate} // momentPropTypes.momentObj or null,
-            startDateId={START_DATE} // PropTypes.string.isRequired,
-            endDate={endDate} // momentPropTypes.momentObj or null,
-            endDateId={END_DATE} // PropTypes.string.isRequired,
+            startDate={startDate}
+            startDateId={START_DATE}
+            endDate={endDate}
+            endDateId={END_DATE}
             onDatesChange={({startDate, endDate}) => {
                 setStartDate(startDate)
                 setEndDate(endDate)
-            }} // PropTypes.func.isRequired,
-            focusedInput={focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-            onFocusChange={focusedInput => setFocusedInput(focusedInput ?? null)} // PropTypes.func.isRequired,
+            }}
+            focusedInput={focusedInput}
+            onFocusChange={focusedInput => setFocusedInput(focusedInput ?? null)}
         />
     </>)
 

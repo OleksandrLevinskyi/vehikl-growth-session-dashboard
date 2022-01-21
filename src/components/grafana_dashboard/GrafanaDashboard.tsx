@@ -13,24 +13,36 @@ import {
     DrawerHeader,
     DrawerOverlay
 } from "@chakra-ui/react";
-import moment from "moment";
+import moment, {Moment} from "moment";
 
 
+const DASHBOARD_URL = 'http://localhost:3005/d/ndxFSP07k/stats?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
-export const MAX_DATE = moment().add(1, 'month')
+export const MAX_DATE = moment()
 
 function GrafanaDashboard() {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
 
+    function getDashboardLink() {
+        let varFrom = formatDate(startDate),
+            varTo = formatDate(endDate),
+            from = dateToUnixTimeStamp(startDate),
+            to = dateToUnixTimeStamp(endDate);
+        return `${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=light`;
+    }
+
+    const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
+
+    const formatDate = (date: Moment) => date.format(DATE_FORMAT)
+
     return (
         <>
-            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
+            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
+                              setEndDate={setEndDate}/>
 
-            {/*<iframe*/}
-            {/*    src={`http://localhost:3005/d/ndxFSP07k/stats?orgId=1&var-from=${startDate.toFormat(DATE_FORMAT)}&var-to=${endDateQP(endDate)}&from=${startDate.toMillis()}&to=${endDate ? endDate.toMillis() : 'now'}&theme=light`}*/}
-            {/*    frameBorder="0"/>*/}
+            <iframe src={getDashboardLink()} />
         </>
     );
 }
