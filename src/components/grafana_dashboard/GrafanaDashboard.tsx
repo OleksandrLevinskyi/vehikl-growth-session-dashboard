@@ -19,13 +19,15 @@ import moment, {Moment} from "moment";
 const DASHBOARD_URL = 'http://localhost:3005/d/ndxFSP07k/stats?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
-export const MAX_DATE = moment()
+export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
 
 function GrafanaDashboard() {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
 
     function getDashboardLink() {
+        if (!startDate || !endDate) return;
+
         let varFrom = formatDate(startDate),
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
@@ -42,7 +44,7 @@ function GrafanaDashboard() {
             <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
                               setEndDate={setEndDate}/>
 
-            <iframe src={getDashboardLink()} />
+            <iframe src={getDashboardLink()}/>
         </>
     );
 }
