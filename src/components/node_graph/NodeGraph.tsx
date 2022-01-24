@@ -30,7 +30,8 @@ function NodeGraph() {
                 (result) => {
                     setData(result);
 
-                    let nodeSummaries = [...result.nodes].map((node: any) => (new Graph(result)).getNodeInfo(node));
+                    let graph = new Graph(result);
+                    let nodeSummaries = [...result.nodes].map((node: any) => graph.getNodeInfo(node));
                     setNodeSummaries(nodeSummaries);
                 },
                 (error) => {
@@ -39,7 +40,11 @@ function NodeGraph() {
             )
     }, []);
 
-    function loadNewNodeGraph(data:any) {
+    useEffect(() => {
+        if (nodeSummaries) loadNewNodeGraph(data)
+    }, [nodeSummaries])
+
+    function loadNewNodeGraph(data: any) {
         d3.select('#svg-container').selectChild().remove();
         d3.select('#svg-container').append('svg');
 
@@ -107,7 +112,7 @@ function NodeGraph() {
 
         const zoom = d3.zoom()
             .on('zoom', (event: any) => svg.attr("transform", event.transform));
-        zoom(d3.select('svg'));
+        zoom(d3.select('#svg-container').selectChild());
 
         let edgeText = edge.append("text")
             .text((d: any) => d.weight);
@@ -145,14 +150,11 @@ function NodeGraph() {
     return (
         <>
             <Button onClick={() => {
-                loadNewNodeGraph(data)
-            }}>Get Data + Create SVG</Button>
-            <Button onClick={() => {
                 setIsDrawerOpen(true)
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
             }}>Filter By Specific Node</Button>
 
-            <span id="svg-container"></span>
+            <span id="svg-container"/>
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
