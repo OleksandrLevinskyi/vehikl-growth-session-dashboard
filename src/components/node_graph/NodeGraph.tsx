@@ -154,6 +154,11 @@ function NodeGraph() {
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
             }}>Filter By Specific Node</Button>
 
+            <Button onClick={() => {
+                setIsDrawerOpen(true)
+                setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
+            }}>Filter By Multiple Nodes</Button>
+
             <span id="svg-container"/>
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
