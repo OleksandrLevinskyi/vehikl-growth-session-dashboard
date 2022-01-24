@@ -9,10 +9,14 @@ export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
 
-function GrafanaDashboard() {
+function GrafanaDashboard({colorMode}:any) {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
+
+    useEffect(()=>{
+        getDashboardLink();
+    },[colorMode])
 
     function getDashboardLink() {
         if (!startDate || !endDate) {
@@ -24,7 +28,8 @@ function GrafanaDashboard() {
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
             to = dateToUnixTimeStamp(endDate);
-        setDashboardLink(`${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=light&kiosk`);
+        console.log(colorMode)
+        setDashboardLink(`${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=${colorMode}&kiosk`);
     }
 
     const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
