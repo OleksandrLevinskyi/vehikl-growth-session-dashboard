@@ -49,7 +49,7 @@ function NodeGraph() {
         d3.select('#svg-container').append('svg');
 
         let svg: any = d3.select("#svg-container").selectChild(),
-            width = window.innerWidth * .9,
+            width = window.innerWidth * .95,
             height = window.innerHeight * .9;
 
         svg.attr('width', width)
