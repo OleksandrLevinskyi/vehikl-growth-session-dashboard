@@ -50,7 +50,7 @@ function NodeGraph() {
 
         let svg: any = d3.select("#svg-container").selectChild(),
             width = window.innerWidth * .95,
-            height = window.innerHeight * .9;
+            height = window.innerHeight * .8;
 
         svg.attr('width', width)
             .attr('height', height);
@@ -75,8 +75,11 @@ function NodeGraph() {
             .append("g")
 
         const circles = node.append("circle")
-            .attr("r", 80)
-            .attr("fill", "blue");
+            .attr("r", 25)
+            .attr("fill", (node:any)=>{
+                // if(node.id ==data.nodes[0]) return "orange";
+                return "blue";
+            });
 
         node.append("text")
             .text((d: any) => d.name)
@@ -119,7 +122,7 @@ function NodeGraph() {
 
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges).distance((d: any) => {
-                return Math.sqrt(1 / d.weight) * 20000;
+                return Math.sqrt(1 / d.weight) * 1000;
             })
                 .id((link: any) => {
                     return link.id
@@ -152,12 +155,12 @@ function NodeGraph() {
             <Button onClick={() => {
                 setIsDrawerOpen(true)
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
-            }}>Filter By Specific Node</Button>
+            }} className="filter-button">Filter By Specific Node</Button>
 
             <Button onClick={() => {
                 setIsDrawerOpen(true)
                 setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
-            }}>Filter By Multiple Nodes</Button>
+            }} className="filter-button">Filter By Multiple Nodes</Button>
 
             <span id="svg-container"/>
 

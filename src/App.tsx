@@ -60,16 +60,16 @@ function App() {
                 }
                 {
                     colorMode === 'light' ?
-                    <IconButton
-                        aria-label={'Sun Icon'}
-                        size='lg'
-                        icon={<SunIcon/>}
-                        onClick={toggleColorMode}/> :
-                    <IconButton
-                        aria-label={'Moon Icon'}
-                        size='lg'
-                        icon={<MoonIcon/>}
-                        onClick={toggleColorMode}/>
+                        <IconButton
+                            aria-label={'Sun Icon'}
+                            size='lg'
+                            icon={<SunIcon/>}
+                            onClick={toggleColorMode}/> :
+                        <IconButton
+                            aria-label={'Moon Icon'}
+                            size='lg'
+                            icon={<MoonIcon/>}
+                            onClick={toggleColorMode}/>
                 }
             </Flex>
             <Spacer/>

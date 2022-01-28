@@ -21,8 +21,7 @@ function CustomDrawer({
                           loadNewNodeGraph,
                           nodeSummaries
                       }: any) {
-
-    const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number>();
+    const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
 
     function getDrawerHeader() {
@@ -62,7 +61,8 @@ function CustomDrawer({
                         <input type="radio" id={node.id}
                                name="specific_node_filter"
                                key={`radio-${key}`}
-                               onClick={() => setSpecificNodeIdToFilterBy(node.id)}/>
+                               onChange={() => setSpecificNodeIdToFilterBy(node.id)}
+                               checked={isRadioChecked(node.id)}/>
                         <label htmlFor={node.id}
                                key={`label-${key}`}>{node.name}</label>
                         <br/>
@@ -75,13 +75,14 @@ function CustomDrawer({
                         <input type="checkbox" id={node.id}
                                name="multipe_node_filter"
                                key={`checkobx-${key}`}
-                               onClick={() => {
+                               onChange={() => {
                                    if (multipleNodeIdsToFilterBy.includes(node.id)) {
                                        setMultipleNodeIdsToFilterBy([...multipleNodeIdsToFilterBy].filter((nodeId) => nodeId !== node.id));
                                    } else {
                                        setMultipleNodeIdsToFilterBy([...multipleNodeIdsToFilterBy, node.id])
                                    }
-                               }}/>
+                               }}
+                        checked={isCheckboxChecked(node.id)}/>
                         <label htmlFor={node.id}
                                key={`label-${key}`}>{node.name}</label>
                         <br/>
@@ -131,6 +132,20 @@ function CustomDrawer({
         let data = {nodes, edges};
         console.log(data)
         return data;
+    }
+
+    const isRadioChecked = (nodeId:number) => {
+        if (nodeId === specificNodeIdToFilterBy) {
+            return true;
+        }
+        return false;
+    }
+
+    const isCheckboxChecked = (nodeId:number) => {
+        if (multipleNodeIdsToFilterBy.includes(nodeId)) {
+            return true;
+        }
+        return false;
     }
 
     return (
