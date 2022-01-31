@@ -75,7 +75,7 @@ function App() {
             <Spacer/>
             <Tabs>
                 <TabList>
-                    <Tab>All Time</Tab>
+                    <Tab>Dashboard</Tab>
                     <Tab>Node Graph</Tab>
                 </TabList>
 

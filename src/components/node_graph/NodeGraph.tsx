@@ -76,8 +76,8 @@ function NodeGraph() {
 
         const circles = node.append("circle")
             .attr("r", 25)
-            .attr("fill", (node:any)=>{
-                // if(node.id ==data.nodes[0]) return "orange";
+            .attr("fill", (node: any) => {
+                if (node.id == data.nodes[0].id && currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) return "orange";
                 return "blue";
             });
 
@@ -122,6 +122,7 @@ function NodeGraph() {
 
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges).distance((d: any) => {
+                if (currentDrawerType == DRAWER_TYPE.DEFAULT) return Math.sqrt(1 / d.weight) * 10000;
                 return Math.sqrt(1 / d.weight) * 1000;
             })
                 .id((link: any) => {
