@@ -27,7 +27,7 @@ const App: React.FC = () => {
     useEffect(() => {
         let hashToken = window.location.hash.slice(1);
         if (hashToken) {
-            fetch(`http://localhost:8001/social_user/${hashToken}`)
+            fetch(`http://localhost:8000/social_user/${hashToken}`)
                 .then((res) => res.json())
                 .then(
                     (result) => {
@@ -48,7 +48,7 @@ const App: React.FC = () => {
 
                 {
                     !loggedInUser ?
-                        <Link color='light-blue' size='large' padding={3} href="http://localhost:8001/login/github">Log
+                        <Link color='light-blue' size='large' padding={3} href="http://localhost:8000/login/github">Log
                             In</Link>
                         :
                         <Flex onClick={() => setLoggedInUser(null)}>

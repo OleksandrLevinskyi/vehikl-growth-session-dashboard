@@ -1,9 +1,6 @@
 import './HeatMap.css';
 import * as d3 from 'd3';
 import React, {useEffect, useState} from "react";
-import {
-    Button
-} from "@chakra-ui/react";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -13,22 +10,13 @@ export const DRAWER_TYPE = {
 
 const HeatMap: React.FC = () => {
     const [data, setData] = useState<any>();
-    // const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-    // const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
-    //
-    // const [nodeSummaries, setNodeSummaries] = useState<Array<NodeSummary>>();
-    // const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
     useEffect(() => {
-        fetch('http://localhost:8001/heatmap')
+        fetch('http://localhost:8000/heatmap')
             .then(res => res.json())
             .then(
                 (result) => {
                     setData(result);
-
-                    // let graph = new Graph(result);
-                    // let nodeSummaries = [...result.nodes].map((node: Node) => graph.getNodeInfo(node));
-                    // setNodeSummaries(nodeSummaries);
                 },
                 (error) => {
                     console.error('error fetching data: ', error);
@@ -43,9 +31,14 @@ const HeatMap: React.FC = () => {
     }, [data])
 
     const loadNewHeatMap = (data: any) => {
-        let margin = {top: 80, right: 25, bottom: 30, left: 40},
-            width = 1200 - margin.left - margin.right,
-            height = 1200 - margin.top - margin.bottom;
+        d3.select('#heat-map').selectChild().remove();
+        d3.select('#heat-map').append('svg');
+
+        console.log(data)
+
+        let margin = {top: 80, right: 25, bottom: 30, left: 120},
+            width = window.innerWidth * .95 - margin.left - margin.right,
+            height = window.innerWidth * .95 - margin.top - margin.bottom;
 
         let svg = d3.select("#heat-map")
             .append("svg")
@@ -65,32 +58,36 @@ const HeatMap: React.FC = () => {
             .domain(rows)
             .padding(0.05);
 
-        // svg.append("g")
-        //     .style("font-size", 15)
-        //     .attr("transform", "translate(0," + height + ")")
-        //     .call(d3.axisBottom(xScale).tickSize(0))
-        // .select(".domain").remove();
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale).tickSize(0))
+            .select(".domain").remove();
 
         let yScale = d3.scaleBand()
             .range([height, 0])
             .domain(cols)
             .padding(0.05);
 
-        // svg.append("g")
-        //     .style("font-size", 15)
-        //     .call(d3.axisLeft(yScale).tickSize(0))
-//                 .select(".domain").remove()
+        svg.append("g")
+            .call(d3.axisLeft(yScale).tickSize(0))
+            .select(".domain").remove();
+
+        const maxWeight = data.reduce((prev: any, current:any) =>{
+            return (prev.weight > current.weight) ? prev : current
+        }).weight?? 0;
+
 
         let colorRange = d3.scaleSequential()
-            .interpolator(d3.interpolateInferno)
-            .domain([1, 100])
+            .interpolator(d3.interpolateGreens)
+            // .interpolator(["rgb(49,255,0)", "rgb(0,90,13)"])
+            .domain([1, maxWeight]);
 
         let tooltip = d3.select("#heat-map")
             .append("div")
             .style("opacity", 0)
             .attr("class", "tooltip");
 
-        const mouseover = (event:any) =>{
+        const mouseover = (event: any) => {
             tooltip
                 .style("opacity", 1)
 
@@ -98,16 +95,16 @@ const HeatMap: React.FC = () => {
                 .style("stroke", "red")
                 .style("opacity", 1)
         }
-        const mousemove = (event:any) =>{
+        const mousemove = (event: any) => {
             const cellData = event.target.__data__;
             console.log(d3.pointer(event))
 
             tooltip
                 .html(`${cellData.source} + ${cellData.target}: ${cellData.weight}`)
-                .style("left", (d3.pointer(event)[0] + 70) + "px")
-                .style("top", (d3.pointer(event)[1]) + "px")
+                .style("left", (d3.pointer(event)[0] + margin.left) + "px")
+                .style("top", (d3.pointer(event)[1] + margin.top) + "px")
         }
-        const mouseleave = (event:any) =>{
+        const mouseleave = (event: any) => {
             tooltip
                 .style("opacity", 0)
 
@@ -126,7 +123,7 @@ const HeatMap: React.FC = () => {
             .attr("ry", 4)
             .attr("width", xScale.bandwidth())
             .attr("height", yScale.bandwidth())
-            .style("fill", (dataPoint: any) => colorRange(dataPoint.weight))
+            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? 'red' : colorRange(dataPoint.weight))
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
@@ -151,7 +148,6 @@ const HeatMap: React.FC = () => {
 //             .style("fill", "grey")
 //             .style("max-width", 400)
 //             .text("A short description of the take-away message of this chart.");
-
     }
 
 

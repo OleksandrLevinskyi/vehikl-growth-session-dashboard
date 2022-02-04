@@ -24,7 +24,7 @@ const NodeGraph: React.FC = () => {
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
     useEffect(() => {
-        fetch('http://localhost:8001/nodegraph')
+        fetch('http://localhost:8000/nodegraph')
             .then(res => res.json())
             .then(
                 (result) => {
