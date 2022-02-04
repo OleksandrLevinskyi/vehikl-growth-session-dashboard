@@ -85,36 +85,36 @@ const HeatMap: React.FC = () => {
             .interpolator(d3.interpolateInferno)
             .domain([1, 100])
 
-        // let tooltip = d3.select("#heat-map")
-        //     .append("div")
-        //     .style("opacity", 0)
-        //     .attr("class", "tooltip")
-        //     .style("background-color", "white")
-        //     .style("border", "solid")
-        //     .style("border-width", "2px")
-        //     .style("border-radius", "5px")
-        //     .style("padding", "5px")
+        let tooltip = d3.select("#heat-map")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip");
 
-        // const mouseover = (d:any) =>{
-        //     tooltip
-        //         .style("opacity", 1)
-        //     d3.select(this)
-        //         .style("stroke", "black")
-        //         .style("opacity", 1)
-        // }
-        // const mousemove = (d:any) =>{
-        //     tooltip
-        //         .html("The exact value of<br>this cell is: " + d.value)
-        //         .style("left", (d3.mouse(this)[0] + 70) + "px")
-        //         .style("top", (d3.mouse(this)[1]) + "px")
-        // }
-        // const mouseleave = (d:any) =>{
-        //     tooltip
-        //         .style("opacity", 0)
-        //     d3.select(this)
-        //         .style("stroke", "none")
-        //         .style("opacity", 0.8)
-        // }
+        const mouseover = (event:any) =>{
+            tooltip
+                .style("opacity", 1)
+
+            d3.select(event.target)
+                .style("stroke", "red")
+                .style("opacity", 1)
+        }
+        const mousemove = (event:any) =>{
+            const cellData = event.target.__data__;
+            console.log(d3.pointer(event))
+
+            tooltip
+                .html(`${cellData.source} + ${cellData.target}: ${cellData.weight}`)
+                .style("left", (d3.pointer(event)[0] + 70) + "px")
+                .style("top", (d3.pointer(event)[1]) + "px")
+        }
+        const mouseleave = (event:any) =>{
+            tooltip
+                .style("opacity", 0)
+
+            d3.select(event.target)
+                .style("stroke", "none")
+                .style("opacity", 0.8)
+        }
 
         svg.selectAll()
             .data(data, (dataPoint: any) => dataPoint.source + ':' + dataPoint.target)
@@ -130,9 +130,9 @@ const HeatMap: React.FC = () => {
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
-            // .on("mouseover", mouseover)
-            // .on("mousemove", mousemove)
-            // .on("mouseleave", mouseleave)
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave)
 //
 // // Add title to graph
 //         svg.append("text")
