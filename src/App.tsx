@@ -80,6 +80,7 @@ const App: React.FC = () => {
                 <TabList>
                     <Tab>Dashboard</Tab>
                     <Tab>Node Graph</Tab>
+                    <Tab>Heat Map</Tab>
                 </TabList>
 
                 <TabPanels>
@@ -88,6 +89,9 @@ const App: React.FC = () => {
                     </TabPanel>
                     <TabPanel>
                         <NodeGraph/>
+                    </TabPanel>
+                    <TabPanel>
+                        <HeatMap/>
                     </TabPanel>
                 </TabPanels>
             </Tabs>

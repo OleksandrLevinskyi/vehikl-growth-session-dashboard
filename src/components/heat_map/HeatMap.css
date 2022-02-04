@@ -1,0 +1,33 @@
+#svg-container svg {
+    background: lightblue;
+    margin: auto;
+}
+
+.filter-button{
+    margin: 5px 30px;
+}
+
+.links line {
+    stroke: #000;
+    stroke-opacity: 0.6;
+    stroke-width: .5;
+}
+
+.nodes circle {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+text {
+    font-family: sans-serif;
+    font-size: 5px;
+    font-weight: bold;
+}
+
+.label {
+    fill:white;
+    dominant-baseline: central;
+    font-size: 5px;
+    /*word-break: break-word;*/
+    /*transform: translate(0, 50%);*/
+}
