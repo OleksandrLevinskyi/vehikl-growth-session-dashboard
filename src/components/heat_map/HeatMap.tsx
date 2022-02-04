@@ -31,12 +31,9 @@ const HeatMap: React.FC = () => {
     }, [data])
 
     const loadNewHeatMap = (data: any) => {
-        d3.select('#heat-map').selectChild().remove();
-        d3.select('#heat-map').append('svg');
+        d3.select('#heat-map').selectChildren().remove();
 
-        console.log(data)
-
-        let margin = {top: 80, right: 25, bottom: 30, left: 120},
+        let margin = {top: 80, right: 25, bottom: 30, left: 120, tooltipTop: 140, tooltipLeft: 130},
             width = window.innerWidth * .95 - margin.left - margin.right,
             height = window.innerWidth * .95 - margin.top - margin.bottom;
 
@@ -46,8 +43,6 @@ const HeatMap: React.FC = () => {
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
-
-        console.log(data)
 
         let rows = d3.map(data, (dataPoint: any) => dataPoint.source);
         let cols = d3.map(data, (dataPoint: any) => dataPoint.target);
@@ -101,8 +96,8 @@ const HeatMap: React.FC = () => {
 
             tooltip
                 .html(`${cellData.source} + ${cellData.target}: ${cellData.weight}`)
-                .style("left", (d3.pointer(event)[0] + margin.left) + "px")
-                .style("top", (d3.pointer(event)[1] + margin.top) + "px")
+                .style("left", (d3.pointer(event)[0] + margin.tooltipLeft) + "px")
+                .style("top", (d3.pointer(event)[1] + margin.tooltipTop) + "px")
         }
         const mouseleave = (event: any) => {
             tooltip
