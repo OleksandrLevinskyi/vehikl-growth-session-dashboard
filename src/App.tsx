@@ -10,15 +10,19 @@ import {
     TabPanels,
     Tabs,
     useColorMode,
-    IconButton, Link, Image
+    IconButton,
+    Link,
+    Image
 } from "@chakra-ui/react";
 import NodeGraph from "./components/node_graph/NodeGraph";
 import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
-import {MoonIcon, PhoneIcon, SunIcon} from "@chakra-ui/icons";
+import {MoonIcon, SunIcon} from "@chakra-ui/icons";
+import {User} from "./types/Types";
+import HeatMap from "./components/heat_map/HeatMap";
 
-function App() {
-    const {colorMode, toggleColorMode} = useColorMode()
-    const [loggedInUser, setLoggedInUser] = useState<any>();
+const App: React.FC = () => {
+    const {colorMode, toggleColorMode} = useColorMode();
+    const [loggedInUser, setLoggedInUser] = useState<User| null>();
 
     useEffect(() => {
         let hashToken = window.location.hash.slice(1);
@@ -27,7 +31,6 @@ function App() {
                 .then((res) => res.json())
                 .then(
                     (result) => {
-                        console.log(result)
                         setLoggedInUser(result);
                     },
                     (error) => {
@@ -90,6 +93,6 @@ function App() {
             </Tabs>
         </>
     );
-}
+};
 
 export default App;

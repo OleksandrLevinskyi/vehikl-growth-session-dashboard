@@ -28,7 +28,6 @@ function GrafanaDashboard({colorMode}:any) {
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
             to = dateToUnixTimeStamp(endDate);
-        console.log(colorMode)
         setDashboardLink(`${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=${colorMode}&kiosk`);
     }
 

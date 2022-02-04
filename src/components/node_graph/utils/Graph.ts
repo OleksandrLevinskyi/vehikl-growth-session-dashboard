@@ -1,13 +1,14 @@
 import {Connection, NodeSummary} from "./NodeSummary";
+import {Node, NodeGraphType} from "../../../types/Types";
 
 export class Graph {
     data: any;
 
-    constructor(data: any) {
+    constructor(data: NodeGraphType) {
         this.data = data;
     }
 
-    getNodeInfo(node: any) {
+    getNodeInfo(node: Node) {
         let id = node.id;
 
         let connections = [...this.data.edges]

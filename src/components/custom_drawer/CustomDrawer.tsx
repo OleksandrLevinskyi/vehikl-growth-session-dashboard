@@ -129,9 +129,7 @@ function CustomDrawer({
             }
         });
 
-        let data = {nodes, edges};
-        console.log(data)
-        return data;
+        return {nodes, edges};
     }
 
     const isRadioChecked = (nodeId:number) => {

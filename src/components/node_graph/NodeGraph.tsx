@@ -1,12 +1,13 @@
 import './NodeGraph.css';
 import * as d3 from 'd3';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Button
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
 import {Connection, NodeSummary} from "./utils/NodeSummary";
 import CustomDrawer from "../custom_drawer/CustomDrawer";
+import {Node, NodeGraphType} from "../../types/Types";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -14,24 +15,23 @@ export const DRAWER_TYPE = {
     MULTIPLE_NODES: 'MULTIPLE_NODES'
 }
 
-function NodeGraph() {
-    const [data, setData] = useState<any>();
+const NodeGraph: React.FC = () => {
+    const [data, setData] = useState<NodeGraphType>();
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
 
     const [nodeSummaries, setNodeSummaries] = useState<Array<NodeSummary>>();
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
-
     useEffect(() => {
-        fetch('http://localhost:8000/nodegraph')
+        fetch('http://localhost:8001/nodegraph')
             .then(res => res.json())
             .then(
                 (result) => {
                     setData(result);
 
                     let graph = new Graph(result);
-                    let nodeSummaries = [...result.nodes].map((node: any) => graph.getNodeInfo(node));
+                    let nodeSummaries = [...result.nodes].map((node: Node) => graph.getNodeInfo(node));
                     setNodeSummaries(nodeSummaries);
                 },
                 (error) => {
@@ -41,10 +41,12 @@ function NodeGraph() {
     }, []);
 
     useEffect(() => {
-        if (nodeSummaries) loadNewNodeGraph(data)
+        if (data && nodeSummaries) {
+            loadNewNodeGraph(data)
+        }
     }, [nodeSummaries])
 
-    function loadNewNodeGraph(data: any) {
+    const loadNewNodeGraph = (data: NodeGraphType) => {
         d3.select('#svg-container').selectChild().remove();
         d3.select('#svg-container').append('svg');
 
@@ -67,50 +69,50 @@ function NodeGraph() {
 
         let link = edge.append("line");
 
-        const node = svg.append("g")
+        const nodeGroup = svg.append("g")
             .attr("class", "nodes")
             .selectAll("g")
             .data(data.nodes)
             .enter()
             .append("g")
 
-        const circles = node.append("circle")
+        nodeGroup.append("circle")
             .attr("r", 25)
-            .attr("fill", (node: any) => {
+            .attr("fill", (node: Node) => {
                 if (node.id == data.nodes[0].id && currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) return "orange";
                 return "blue";
             });
 
-        node.append("text")
-            .text((d: any) => d.name)
+        nodeGroup.append("text")
+            .text((node: Node) => node.name)
             .attr('class', 'label')
             .attr('text-anchor', 'middle')
 
         const drag_handler = d3.drag()
-            .on("start", (event: any, d: any) => {
+            .on("start", (event: any, node: any) => {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
+                node.fx = node.x;
+                node.fy = node.y;
             })
-            .on("drag", (event: any, d: any) => {
-                d.fx = event.x;
-                d.fy = event.y;
+            .on("drag", (event: any, node: any) => {
+                node.fx = event.x;
+                node.fy = event.y;
             })
-            .on("end", (event: any, d: any) => {
+            .on("end", (event: any, node: any) => {
                 if (!event.active) simulation.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
+                node.fx = null;
+                node.fy = null;
             });
 
-        drag_handler(node as any);
+        drag_handler(nodeGroup as any);
 
-        node.on('click', (event: any) => {
+        nodeGroup.on('click', (event: any) => {
             let selectedNodeId = event.target.__data__.id;
-            let a = nodeSummaries!.filter((node: any) => node.id === selectedNodeId)[0]
+            let selectedNodeSummary = nodeSummaries!.filter((node: NodeSummary) => node.id === selectedNodeId)[0];
 
-            setSelectedNodeSummary(a);
-            setIsDrawerOpen(true)
-            setCurrentDrawerType(DRAWER_TYPE.DEFAULT)
+            setSelectedNodeSummary(selectedNodeSummary);
+            setIsDrawerOpen(true);
+            setCurrentDrawerType(DRAWER_TYPE.DEFAULT);
         })
 
         const zoom = d3.zoom()
@@ -121,13 +123,12 @@ function NodeGraph() {
             .text((d: any) => d.weight);
 
         const simulation = d3.forceSimulation()
-            .force("link", d3.forceLink(...data.edges).distance((d: any) => {
-                if (currentDrawerType == DRAWER_TYPE.DEFAULT) return Math.sqrt(1 / d.weight) * 10000;
-                return Math.sqrt(1 / d.weight) * 1000;
+            .force("link", d3.forceLink(...data.edges as any).distance((d: any) => {
+                return currentDrawerType == DRAWER_TYPE.DEFAULT ?
+                    Math.sqrt(1 / d.weight) * 10000 :
+                    Math.sqrt(1 / d.weight) * 1000;
             })
-                .id((link: any) => {
-                    return link.id
-                }))
+                .id((link: any) => link.id))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -146,7 +147,7 @@ function NodeGraph() {
                 .attr("x2", (d: any) => d.target.x)
                 .attr("y2", (d: any) => d.target.y);
 
-            node.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
+            nodeGroup.attr("transform", (d: any) => "translate(" + d.x + "," + d.y + ")")
             edgeText.attr("transform", (d: any) => "translate(" + (d.source.x + d.target.x) / 2 + "," + (d.source.y + d.target.y) / 2 + ")")
         }
     }
