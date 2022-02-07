@@ -8,6 +8,8 @@ export const DRAWER_TYPE = {
     MULTIPLE_NODES: 'MULTIPLE_NODES'
 }
 
+const OFFSET = 150;
+
 const HeatMap: React.FC = () => {
     const [data, setData] = useState<any>();
 
@@ -74,8 +76,7 @@ const HeatMap: React.FC = () => {
 
         let colorRange = d3.scaleSequential()
             .interpolator(d3.interpolateGreens)
-            // .interpolator(["rgb(49,255,0)", "rgb(0,90,13)"])
-            .domain([1, maxWeight]);
+            .domain([1, maxWeight+OFFSET]);
 
         let tooltip = d3.select("#heat-map")
             .append("div")
@@ -118,7 +119,7 @@ const HeatMap: React.FC = () => {
             .attr("ry", 4)
             .attr("width", xScale.bandwidth())
             .attr("height", yScale.bandwidth())
-            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? 'red' : colorRange(dataPoint.weight))
+            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight+OFFSET))
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
