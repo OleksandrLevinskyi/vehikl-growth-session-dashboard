@@ -3,20 +3,21 @@ import './GrafanaDashboard.css';
 import 'react-dates/lib/css/_datepicker.css';
 import {CustomDatePicker} from '../custom_date_picker/CustomDatePicker';
 import moment, {Moment} from "moment";
+import {Link as RouteLink} from "react-router-dom";
 
 const DASHBOARD_URL = 'http://localhost:3005/d/ndxFSP07k/stats?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
 
-function GrafanaDashboard({colorMode}:any) {
+function GrafanaDashboard({colorMode}: any) {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
 
-    useEffect(()=>{
+    useEffect(() => {
         getDashboardLink();
-    },[colorMode])
+    }, [colorMode])
 
     function getDashboardLink() {
         if (!startDate || !endDate) {
@@ -41,10 +42,12 @@ function GrafanaDashboard({colorMode}:any) {
 
     return (
         <>
-            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
-                              setEndDate={setEndDate}/>
-
-            {dashboardLink ? <iframe src={dashboardLink}/> : <p>Please select a valid date range</p>}
+                <span data-testid="custom-date-picker">
+                    <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
+                                      setEndDate={setEndDate}/>
+                </span>
+            {dashboardLink ? <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
+                <p>Please select a valid date range</p>}
         </>
     );
 }

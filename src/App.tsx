@@ -4,25 +4,21 @@ import {
     Flex,
     Heading,
     Spacer,
-    TabList,
-    Tab,
-    TabPanel,
-    TabPanels,
-    Tabs,
     useColorMode,
     IconButton,
-    Link,
-    Image
+    Link as StyledLink,
+    Image, HStack, StackDivider
 } from "@chakra-ui/react";
 import NodeGraph from "./components/node_graph/NodeGraph";
 import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import {User} from "./types/Types";
 import HeatMap from "./components/heat_map/HeatMap";
+import {BrowserRouter as Router, Link as RouteLink, Route, Routes} from "react-router-dom";
 
 const App: React.FC = () => {
     const {colorMode, toggleColorMode} = useColorMode();
-    const [loggedInUser, setLoggedInUser] = useState<User| null>();
+    const [loggedInUser, setLoggedInUser] = useState<User | null>();
 
     useEffect(() => {
         let hashToken = window.location.hash.slice(1);
@@ -48,8 +44,9 @@ const App: React.FC = () => {
 
                 {
                     !loggedInUser ?
-                        <Link color='light-blue' size='large' padding={3} href="http://localhost:8000/login/github">Log
-                            In</Link>
+                        <StyledLink color='light-blue' size='large' padding={3}
+                                    href="http://localhost:8000/login/github">Log
+                            In</StyledLink>
                         :
                         <Flex onClick={() => setLoggedInUser(null)}>
                             <Image
@@ -58,7 +55,7 @@ const App: React.FC = () => {
                                 src={loggedInUser.avatar}
                                 alt='User Icon'
                             />
-                            <Link color='light-blue' size='large' padding={3} href="#">Log Out</Link>
+                            <StyledLink color='light-blue' size='large' padding={3} href="#">Log Out</StyledLink>
                         </Flex>
                 }
                 {
@@ -76,25 +73,31 @@ const App: React.FC = () => {
                 }
             </Flex>
             <Spacer/>
-            <Tabs>
-                <TabList>
-                    <Tab>Dashboard</Tab>
-                    <Tab>Node Graph</Tab>
-                    <Tab>Heat Map</Tab>
-                </TabList>
+                <Router>
+                        {/*<NavLink to="/dashboard"><Tab>Dashboard</Tab></NavLink>*/}
+                        {/*<NavLink to="/node-graph"><Tab>Node Graph</Tab></NavLink>*/}
+                        {/*<NavLink to="/heat-map"><Tab>Heat Map</Tab></NavLink>*/}
+                        <HStack spacing={3} divider={<StackDivider/>} as="nav">
+                            <RouteLink to="/dashboard">
+                                Dashboard
+                            </RouteLink>
+                            <RouteLink to="/node-graph">
+                                Node Graph
+                            </RouteLink>
+                            <RouteLink to="/heat-map">
+                                Heat Map
+                            </RouteLink>
 
-                <TabPanels>
-                    <TabPanel>
-                        <GrafanaDashboard colorMode={colorMode}/>
-                    </TabPanel>
-                    <TabPanel>
-                        <NodeGraph/>
-                    </TabPanel>
-                    <TabPanel>
-                        <HeatMap/>
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
+                        </HStack>
+
+                    <Routes>
+                        <Route path="/dashboard/:date" element={<GrafanaDashboard colorMode={colorMode}/>}/>
+                        <Route path="/node-graph" element={<NodeGraph/>}/>
+                        <Route path="/heat-map" element={<HeatMap/>}/>
+
+                        <Route path="/*" element={<GrafanaDashboard colorMode={colorMode}/>}/>
+                    </Routes>
+                </Router>
         </>
     );
 };

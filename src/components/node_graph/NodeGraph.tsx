@@ -164,7 +164,7 @@ const NodeGraph: React.FC = () => {
                 setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
             }} className="filter-button">Filter By Multiple Nodes</Button>
 
-            <span id="svg-container"/>
+            <span id="svg-container" data-testid="node-graph"/>
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}

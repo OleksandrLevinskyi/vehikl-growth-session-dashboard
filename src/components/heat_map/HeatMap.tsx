@@ -149,7 +149,7 @@ const HeatMap: React.FC = () => {
 
     return (
         <>
-            <span id="heat-map"/>
+            <span id="heat-map" data-testid="heat-map"/>
         </>
     );
 }
