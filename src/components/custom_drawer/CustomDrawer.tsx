@@ -11,6 +11,8 @@ import {
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
 import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
+import CheckboxList from "../checkbox_list/CheckboxList";
+import RadioButtonList from "../radio_button_list/RadioButtonList";
 
 function CustomDrawer({
                           data,
@@ -39,12 +41,14 @@ function CustomDrawer({
         switch (currentDrawerType) {
             case DRAWER_TYPE.MULTIPLE_NODES:
                 return <span>
-                    {generateCheckBoxes()}
+                    {/*{generateCheckBoxes()}*/}
+                    <CheckboxList/>
                     <Button onClick={() => loadNewNodeGraph(filterDataByMultipleNodesFilterSelection())}>Apply</Button>
                 </span>
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
-                    {generateRadioButtons()}
+                    {/*{generateRadioButtons()}*/}
+                    <RadioButtonList/>
                     <Button onClick={() => loadNewNodeGraph(filterDataBySpecificNodeFilterSelection())}>Apply</Button>
                 </span>
             default:
@@ -82,7 +86,7 @@ function CustomDrawer({
                                        setMultipleNodeIdsToFilterBy([...multipleNodeIdsToFilterBy, node.id])
                                    }
                                }}
-                        checked={isCheckboxChecked(node.id)}/>
+                               checked={isCheckboxChecked(node.id)}/>
                         <label htmlFor={node.id}
                                key={`label-${key}`}>{node.name}</label>
                         <br/>
@@ -132,14 +136,14 @@ function CustomDrawer({
         return {nodes, edges};
     }
 
-    const isRadioChecked = (nodeId:number) => {
+    const isRadioChecked = (nodeId: number) => {
         if (nodeId === specificNodeIdToFilterBy) {
             return true;
         }
         return false;
     }
 
-    const isCheckboxChecked = (nodeId:number) => {
+    const isCheckboxChecked = (nodeId: number) => {
         if (multipleNodeIdsToFilterBy.includes(nodeId)) {
             return true;
         }
