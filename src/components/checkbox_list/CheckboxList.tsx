@@ -1,8 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './CheckboxList.css';
-import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
-import {Button} from "@chakra-ui/react";
-
 
 function CheckboxList({nodes, multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy}:any) {
 
