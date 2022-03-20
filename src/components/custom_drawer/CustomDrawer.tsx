@@ -23,8 +23,8 @@ function CustomDrawer({
                           loadNewNodeGraph,
                           nodeSummaries
                       }: any) {
-    const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
+    const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
 
     function getDrawerHeader() {
         switch (currentDrawerType) {
@@ -41,14 +41,14 @@ function CustomDrawer({
         switch (currentDrawerType) {
             case DRAWER_TYPE.MULTIPLE_NODES:
                 return <span>
-                    {/*{generateCheckBoxes()}*/}
-                    <CheckboxList/>
+                    <CheckboxList nodes={data.nodes} multipleNodeIdsToFilterBy={multipleNodeIdsToFilterBy}
+                                  setMultipleNodeIdsToFilterBy={setMultipleNodeIdsToFilterBy}/>
                     <Button onClick={() => loadNewNodeGraph(filterDataByMultipleNodesFilterSelection())}>Apply</Button>
                 </span>
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
-                    {/*{generateRadioButtons()}*/}
-                    <RadioButtonList/>
+                    <RadioButtonList nodes={data.nodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
+                                     setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                     <Button onClick={() => loadNewNodeGraph(filterDataBySpecificNodeFilterSelection())}>Apply</Button>
                 </span>
             default:
@@ -57,55 +57,6 @@ function CustomDrawer({
                         key={key}>{connection}</p>) :
                     "no records";
         }
-    }
-
-    function generateRadioButtons() {
-        return data.nodes
-            .map((node: any, key: number) => <span key={`span-${key}`}>
-                        <input type="radio" id={node.id}
-                               name="specific_node_filter"
-                               key={`radio-${key}`}
-                               onChange={() => setSpecificNodeIdToFilterBy(node.id)}
-                               checked={isRadioChecked(node.id)}/>
-                        <label htmlFor={node.id}
-                               key={`label-${key}`}>{node.name}</label>
-                        <br/>
-                    </span>)
-    }
-
-    function generateCheckBoxes() {
-        return data.nodes
-            .map((node: any, key: number) => <span key={`span-${key}`}>
-                        <input type="checkbox" id={node.id}
-                               name="multipe_node_filter"
-                               key={`checkobx-${key}`}
-                               onChange={() => {
-                                   if (multipleNodeIdsToFilterBy.includes(node.id)) {
-                                       setMultipleNodeIdsToFilterBy([...multipleNodeIdsToFilterBy].filter((nodeId) => nodeId !== node.id));
-                                   } else {
-                                       setMultipleNodeIdsToFilterBy([...multipleNodeIdsToFilterBy, node.id])
-                                   }
-                               }}
-                               checked={isCheckboxChecked(node.id)}/>
-                        <label htmlFor={node.id}
-                               key={`label-${key}`}>{node.name}</label>
-                        <br/>
-                    </span>)
-    }
-
-    function filterDataBySpecificNodeFilterSelection() {
-        let filteredNodeSummary = nodeSummaries
-            .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy)[0];
-
-        let edges: any = [],
-            nodes = [{id: filteredNodeSummary.id, name: filteredNodeSummary.name}];
-
-        filteredNodeSummary.connections.forEach(({id, name, weight}: Connection) => {
-            nodes.push({id, name});
-            edges.push({source: specificNodeIdToFilterBy, target: id, weight});
-        });
-
-        return {nodes, edges};
     }
 
     function filterDataByMultipleNodesFilterSelection() {
@@ -136,18 +87,19 @@ function CustomDrawer({
         return {nodes, edges};
     }
 
-    const isRadioChecked = (nodeId: number) => {
-        if (nodeId === specificNodeIdToFilterBy) {
-            return true;
-        }
-        return false;
-    }
+    function filterDataBySpecificNodeFilterSelection() {
+        let filteredNodeSummary = nodeSummaries
+            .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy)[0];
 
-    const isCheckboxChecked = (nodeId: number) => {
-        if (multipleNodeIdsToFilterBy.includes(nodeId)) {
-            return true;
-        }
-        return false;
+        let edges: any = [],
+            nodes = [{id: filteredNodeSummary.id, name: filteredNodeSummary.name}];
+
+        filteredNodeSummary.connections.forEach(({id, name, weight}: Connection) => {
+            nodes.push({id, name});
+            edges.push({source: specificNodeIdToFilterBy, target: id, weight});
+        });
+
+        return {nodes, edges};
     }
 
     return (
