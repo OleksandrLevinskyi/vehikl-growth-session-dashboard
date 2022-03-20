@@ -7,7 +7,7 @@ import {
     DrawerCloseButton,
     DrawerContent,
     DrawerHeader,
-    DrawerOverlay
+    DrawerOverlay, Input
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
 import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
@@ -23,6 +23,7 @@ function CustomDrawer({
                           loadNewNodeGraph,
                           nodeSummaries
                       }: any) {
+    const [nodes, setNodes] = useState([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
     const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
 
@@ -41,21 +42,33 @@ function CustomDrawer({
         switch (currentDrawerType) {
             case DRAWER_TYPE.MULTIPLE_NODES:
                 return <span>
-                    <CheckboxList nodes={data.nodes} multipleNodeIdsToFilterBy={multipleNodeIdsToFilterBy}
-                                  setMultipleNodeIdsToFilterBy={setMultipleNodeIdsToFilterBy}/>
                     <Button onClick={() => loadNewNodeGraph(filterDataByMultipleNodesFilterSelection())}>Apply</Button>
+                    <CheckboxList
+                        nodes={nodes}
+                        multipleNodeIdsToFilterBy={multipleNodeIdsToFilterBy}
+                        setMultipleNodeIdsToFilterBy={setMultipleNodeIdsToFilterBy}/>
                 </span>
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
-                    <RadioButtonList nodes={data.nodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
-                                     setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                     <Button onClick={() => loadNewNodeGraph(filterDataBySpecificNodeFilterSelection())}>Apply</Button>
+                    <RadioButtonList nodes={nodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
+                                     setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                 </span>
             default:
                 return selectedNodeSummary?.formatted_connections.length! > 0 ?
                     selectedNodeSummary?.formatted_connections.map((connection: string, key: number) => <p
                         key={key}>{connection}</p>) :
                     "no records";
+        }
+    }
+
+    function getInputs() {
+        if (currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES || currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) {
+            return <Input variant='flushed' placeholder='Enter node names to filter by ...'
+                          onChange={(e: any) => {
+                              let nodes = data.nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
+                              setNodes(nodes);
+                          }}/>
         }
     }
 
@@ -113,6 +126,8 @@ function CustomDrawer({
                 <DrawerContent>
                     <DrawerCloseButton/>
                     <DrawerHeader>{getDrawerHeader()}</DrawerHeader>
+
+                    {getInputs()}
 
                     <DrawerBody>
                         {getDrawerBody()}
