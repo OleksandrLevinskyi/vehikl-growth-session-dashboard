@@ -35,7 +35,7 @@ const HeatMap: React.FC = () => {
     const loadNewHeatMap = (data: any) => {
         d3.select('#heat-map').selectChildren().remove();
 
-        let margin = {top: 80, right: 25, bottom: 30, left: 120, tooltipTop: 140, tooltipLeft: 130},
+        let margin = {top: 10, right: 10, bottom: 120, left: 120, tooltipTop: 140, tooltipLeft: 130},
             width = window.innerWidth * .95 - margin.left - margin.right,
             height = window.innerWidth * .95 - margin.top - margin.bottom;
 
@@ -56,9 +56,16 @@ const HeatMap: React.FC = () => {
             .padding(0.05);
 
         svg.append("g")
-            .attr("transform", `translate(0,${height})`)
+            .attr("transform", `translate(-${xScale.bandwidth()/2},${height})`)
+            .attr("id","x-axis")
             .call(d3.axisBottom(xScale).tickSize(0))
             .select(".domain").remove();
+
+        svg.select("#x-axis")
+            .selectAll("text")
+            .attr('text-anchor', 'end')
+            .attr("dominant-baseline", "central")
+            .attr("transform", "translate(0,5)rotate(-90)")
 
         let yScale = d3.scaleBand()
             .range([height, 0])
@@ -66,6 +73,7 @@ const HeatMap: React.FC = () => {
             .padding(0.05);
 
         svg.append("g")
+            .attr("id","y-axis")
             .call(d3.axisLeft(yScale).tickSize(0))
             .select(".domain").remove();
 
@@ -126,24 +134,6 @@ const HeatMap: React.FC = () => {
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave)
-//
-// // Add title to graph
-//         svg.append("text")
-//             .attr("x", 0)
-//             .attr("y", -50)
-//             .attr("text-anchor", "left")
-//             .style("font-size", "22px")
-//             .text("A d3.js heatmap");
-//
-// // Add subtitle to graph
-//         svg.append("text")
-//             .attr("x", 0)
-//             .attr("y", -20)
-//             .attr("text-anchor", "left")
-//             .style("font-size", "14px")
-//             .style("fill", "grey")
-//             .style("max-width", 400)
-//             .text("A short description of the take-away message of this chart.");
     }
 
 
