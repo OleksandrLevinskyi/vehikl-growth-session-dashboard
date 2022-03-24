@@ -2,7 +2,7 @@ import './NodeGraph.css';
 import * as d3 from 'd3';
 import React, {useEffect, useState} from "react";
 import {
-    Button
+    Button, Flex
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
 import {Connection, NodeSummary} from "./utils/NodeSummary";
@@ -51,8 +51,8 @@ const NodeGraph: React.FC = () => {
         d3.select('#svg-container').append('svg');
 
         let svg: any = d3.select("#svg-container").selectChild(),
-            width = window.innerWidth * .95,
-            height = window.innerHeight * .8;
+            width = window.innerWidth,
+            height = window.innerHeight * .9;
 
         svg.attr('width', width)
             .attr('height', height);
@@ -79,8 +79,8 @@ const NodeGraph: React.FC = () => {
         nodeGroup.append("circle")
             .attr("r", 25)
             .attr("fill", (node: Node) => {
-                if (node.id == data.nodes[0].id && currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) return "orange";
-                return "blue";
+                if (node.id == data.nodes[0].id && currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) return "#dd5f12";
+                return "#5593f0";
             });
 
         nodeGroup.append("text")
@@ -120,6 +120,7 @@ const NodeGraph: React.FC = () => {
         zoom(d3.select('#svg-container').selectChild());
 
         let edgeText = edge.append("text")
+            .attr("class", "edge_text")
             .text((d: any) => d.weight);
 
         const simulation = d3.forceSimulation()
@@ -154,15 +155,17 @@ const NodeGraph: React.FC = () => {
 
     return (
         <>
-            <Button onClick={() => {
-                setIsDrawerOpen(true)
-                setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
-            }} className="filter-button">Filter By Specific Node</Button>
+            <Flex p={2} justify='center' fontSize='xl'>
+                <Button onClick={() => {
+                    setIsDrawerOpen(true)
+                    setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
+                }} className="filter-button">FILTER BY SPECIFIC NODE</Button>
 
-            <Button onClick={() => {
-                setIsDrawerOpen(true)
-                setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
-            }} className="filter-button">Filter By Multiple Nodes</Button>
+                <Button onClick={() => {
+                    setIsDrawerOpen(true)
+                    setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
+                }} className="filter-button">FILTER BY MULTIPLE NODES</Button>
+            </Flex>
 
             <span id="svg-container" data-testid="node-graph"/>
 

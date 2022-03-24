@@ -4,6 +4,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import {CustomDatePicker} from '../custom_date_picker/CustomDatePicker';
 import moment, {Moment} from "moment";
 import {Link as RouteLink} from "react-router-dom";
+import {Center, Flex, Text} from "@chakra-ui/react";
 
 const DASHBOARD_URL = 'http://localhost:3005/d/ndxFSP07k/stats?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
@@ -43,8 +44,10 @@ function GrafanaDashboard({colorMode}: any) {
     return (
         <>
                 <span data-testid="custom-date-picker">
-                    <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
-                                      setEndDate={setEndDate}/>
+                    <Flex p={2} justify='center' fontSize='xl'>
+                            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
+                                              setEndDate={setEndDate}/>
+                    </Flex>
                 </span>
             {dashboardLink ? <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
                 <p>Please select a valid date range</p>}

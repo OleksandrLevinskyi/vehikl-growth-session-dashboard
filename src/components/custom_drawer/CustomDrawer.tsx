@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './CustomDrawer.css';
 import {
     Button,
@@ -7,6 +7,7 @@ import {
     DrawerCloseButton,
     DrawerContent,
     DrawerHeader,
+    Flex,
     DrawerOverlay, Input
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
@@ -23,9 +24,15 @@ function CustomDrawer({
                           loadNewNodeGraph,
                           nodeSummaries
                       }: any) {
-    const [nodes, setNodes] = useState([]);
+    const [nodes, setNodes] = useState<any>([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
     const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        if (data?.nodes) {
+            setNodes([...data.nodes]);
+        }
+    }, [data])
 
     function getDrawerHeader() {
         switch (currentDrawerType) {
@@ -42,7 +49,6 @@ function CustomDrawer({
         switch (currentDrawerType) {
             case DRAWER_TYPE.MULTIPLE_NODES:
                 return <span>
-                    <Button onClick={() => loadNewNodeGraph(filterDataByMultipleNodesFilterSelection())}>Apply</Button>
                     <CheckboxList
                         nodes={nodes}
                         multipleNodeIdsToFilterBy={multipleNodeIdsToFilterBy}
@@ -50,7 +56,6 @@ function CustomDrawer({
                 </span>
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
-                    <Button onClick={() => loadNewNodeGraph(filterDataBySpecificNodeFilterSelection())}>Apply</Button>
                     <RadioButtonList nodes={nodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
                                      setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                 </span>
@@ -64,11 +69,19 @@ function CustomDrawer({
 
     function getInputs() {
         if (currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES || currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) {
-            return <Input variant='flushed' placeholder='Enter node names to filter by ...'
-                          onChange={(e: any) => {
-                              let nodes = data.nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
-                              setNodes(nodes);
-                          }}/>
+            return <Flex p="2">
+                <Input variant='flushed' placeholder='Enter node names to filter by ...'
+                       onChange={(e: any) => {
+                           let nodes = data.nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
+                           setNodes(nodes);
+                       }}/>
+
+                <Button onClick={() => loadNewNodeGraph(
+                    currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES ?
+                        filterDataByMultipleNodesFilterSelection() :
+                        filterDataBySpecificNodeFilterSelection()
+                )}>Apply</Button>
+            </Flex>
         }
     }
 
@@ -120,7 +133,11 @@ function CustomDrawer({
             <Drawer
                 isOpen={isDrawerOpen}
                 placement='right'
-                onClose={() => setIsDrawerOpen(false)}
+                size='sm'
+                onClose={() => {
+                    setIsDrawerOpen(false);
+                    setNodes([...data.nodes]);
+                }}
             >
                 <DrawerOverlay/>
                 <DrawerContent>

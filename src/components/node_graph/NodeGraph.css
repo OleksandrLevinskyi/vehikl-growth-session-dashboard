@@ -1,16 +1,16 @@
 #svg-container svg {
-    background: lightblue;
+    background: #111217;
     margin: auto;
 }
 
-.filter-button{
+.filter-button {
     margin: 5px 30px;
 }
 
 .links line {
-    stroke: #000;
+    stroke: #fff;
     stroke-opacity: 0.6;
-    stroke-width: .5;
+    stroke-width: 1;
 }
 
 .nodes circle {
@@ -25,9 +25,13 @@ text {
 }
 
 .label {
-    fill:white;
+    fill: white;
     dominant-baseline: central;
     font-size: 5px;
     /*word-break: break-word;*/
     /*transform: translate(0, 50%);*/
+}
+
+.edge_text {
+    fill: #fff;
 }

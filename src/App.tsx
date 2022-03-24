@@ -7,7 +7,7 @@ import {
     useColorMode,
     IconButton,
     Link as StyledLink,
-    Image, HStack, StackDivider
+    Image, HStack, StackDivider, Divider, Center
 } from "@chakra-ui/react";
 import NodeGraph from "./components/node_graph/NodeGraph";
 import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
@@ -37,68 +37,71 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <>
-            <Flex>
+        <Router>
+            <Flex p={2} fontSize='xl' alignItems='center'>
                 <Heading>GS Analytics Board</Heading>
+
                 <Spacer/>
 
-                {
-                    !loggedInUser ?
-                        <StyledLink color='light-blue' size='large' padding={3}
-                                    href="http://localhost:8000/login/github">Log
-                            In</StyledLink>
-                        :
-                        <Flex onClick={() => setLoggedInUser(null)}>
-                            <Image
-                                borderRadius='full'
-                                boxSize='50px'
-                                src={loggedInUser.avatar}
-                                alt='User Icon'
-                            />
-                            <StyledLink color='light-blue' size='large' padding={3} href="#">Log Out</StyledLink>
-                        </Flex>
-                }
-                {
-                    colorMode === 'light' ?
-                        <IconButton
-                            aria-label={'Sun Icon'}
-                            size='lg'
-                            icon={<SunIcon/>}
-                            onClick={toggleColorMode}/> :
-                        <IconButton
-                            aria-label={'Moon Icon'}
-                            size='lg'
-                            icon={<MoonIcon/>}
-                            onClick={toggleColorMode}/>
-                }
+                <HStack spacing="10" as="nav">
+                    <RouteLink to="/dashboard">
+                        DASHBOARD
+                    </RouteLink>
+                    <RouteLink to="/node-graph">
+                        NODE GRAPH
+                    </RouteLink>
+                    <RouteLink to="/heat-map">
+                        HEAT MAP
+                    </RouteLink>
+                    <Divider orientation="vertical"/>
+
+                    {
+                        !loggedInUser ?
+                            <StyledLink color='light-blue' size='large' padding={3}
+                                        href="http://localhost:8000/login/github">
+                                LOG IN
+                            </StyledLink>
+                            :
+                            <Flex onClick={() => setLoggedInUser(null)}>
+                                <Center>
+                                    <Image
+                                        borderRadius='full'
+                                        boxSize='40px'
+                                        src={loggedInUser.avatar}
+                                        alt='User Icon'
+                                    />
+                                </Center>
+                                <StyledLink color='light-blue' size='large' padding={3} href="#">
+                                    LOG OUT
+                                </StyledLink>
+                            </Flex>
+                    }
+                    {
+                        colorMode === 'light' ?
+                            <IconButton
+                                aria-label={'Sun Icon'}
+                                size='lg'
+                                icon={<SunIcon/>}
+                                onClick={toggleColorMode}/> :
+                            <IconButton
+                                aria-label={'Moon Icon'}
+                                size='lg'
+                                icon={<MoonIcon/>}
+                                onClick={toggleColorMode}/>
+                    }
+                </HStack>
             </Flex>
-            <Spacer/>
-                <Router>
-                        {/*<NavLink to="/dashboard"><Tab>Dashboard</Tab></NavLink>*/}
-                        {/*<NavLink to="/node-graph"><Tab>Node Graph</Tab></NavLink>*/}
-                        {/*<NavLink to="/heat-map"><Tab>Heat Map</Tab></NavLink>*/}
-                        <HStack spacing={3} divider={<StackDivider/>} as="nav">
-                            <RouteLink to="/dashboard">
-                                Dashboard
-                            </RouteLink>
-                            <RouteLink to="/node-graph">
-                                Node Graph
-                            </RouteLink>
-                            <RouteLink to="/heat-map">
-                                Heat Map
-                            </RouteLink>
 
-                        </HStack>
+            <Divider/>
 
-                    <Routes>
-                        <Route path="/dashboard/:date" element={<GrafanaDashboard colorMode={colorMode}/>}/>
-                        <Route path="/node-graph" element={<NodeGraph/>}/>
-                        <Route path="/heat-map" element={<HeatMap/>}/>
+            <Routes>
+                <Route path="/dashboard/:date" element={<GrafanaDashboard colorMode={colorMode}/>}/>
+                <Route path="/node-graph" element={<NodeGraph/>}/>
+                <Route path="/heat-map" element={<HeatMap/>}/>
 
-                        <Route path="/*" element={<GrafanaDashboard colorMode={colorMode}/>}/>
-                    </Routes>
-                </Router>
-        </>
+                <Route path="/*" element={<GrafanaDashboard colorMode={colorMode}/>}/>
+            </Routes>
+        </Router>
     );
 };
 
