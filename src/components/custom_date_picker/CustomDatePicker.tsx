@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import 'react-dates/initialize';
 import {DateRangePicker, FocusedInputShape} from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
-import {MAX_DATE, MIN_DATE} from "../grafana_dashboard/GrafanaDashboard";
-import { useNavigate } from "react-router-dom";
-import {Moment} from "moment";
+import {MAX_DATE, MIN_DATE, unixTimeStampToDate} from "../grafana_dashboard/GrafanaDashboard";
+import {useSearchParams, useNavigate, useParams} from "react-router-dom";
+import moment, {Moment} from "moment";
 
 type CustomDatePickerProps = { startDate: any, setStartDate: any, endDate: any, setEndDate: any }
 
@@ -15,6 +15,9 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
     const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
 
     const history = useNavigate();
+    const params = useParams();
+
+    let [searchParams, setSearchParams] = useSearchParams();
 
     const props = {
         numberOfMonths: 1,
@@ -27,6 +30,20 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
     }
 
     const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
+
+    useEffect(() => {
+        let date = searchParams.get('date');
+
+        if (!date) {
+            history(`/dashboard?date=${dateToUnixTimeStamp(MIN_DATE)}-${dateToUnixTimeStamp(MAX_DATE)}`)
+        } else {
+            const [queryStartDate, queryEndDate] = date.split('-');
+
+            setStartDate(unixTimeStampToDate(Number(queryStartDate)));
+            setEndDate(unixTimeStampToDate(Number(queryEndDate)));
+        }
+    }, [])
+
     return (<>
         <DateRangePicker
             {...props}
@@ -39,12 +56,13 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
                 setEndDate(endDate)
 
                 //change url to be startdate-end
-                history(`/dashboard/${dateToUnixTimeStamp(startDate as any)}-${dateToUnixTimeStamp(endDate as any)}`)
+                if (startDate && endDate) {
+                    history(`/dashboard?date=${dateToUnixTimeStamp(startDate as any)}-${dateToUnixTimeStamp(endDate as any)}`)
+                }
             }}
             focusedInput={focusedInput}
             onFocusChange={focusedInput => setFocusedInput(focusedInput ?? null)}
         />
     </>)
-
 
 }

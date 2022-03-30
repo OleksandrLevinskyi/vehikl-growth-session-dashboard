@@ -2,7 +2,7 @@ import './NodeGraph.css';
 import * as d3 from 'd3';
 import React, {useEffect, useState} from "react";
 import {
-    Button, Flex
+    Button, Center, Flex
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
 import {Connection, NodeSummary} from "./utils/NodeSummary";
@@ -40,11 +40,11 @@ const NodeGraph: React.FC = () => {
             )
     }, []);
 
-    useEffect(() => {
-        if (data && nodeSummaries) {
-            loadNewNodeGraph(data)
-        }
-    }, [nodeSummaries])
+    // useEffect(() => {
+    //     if (data && nodeSummaries) {
+    //         loadNewNodeGraph(data)
+    //     }
+    // }, [nodeSummaries])
 
     const loadNewNodeGraph = (data: NodeGraphType) => {
         d3.select('#svg-container').selectChild().remove();
@@ -155,7 +155,7 @@ const NodeGraph: React.FC = () => {
 
     return (
         <>
-            <Flex p={2} justify='center' fontSize='xl'>
+            <Flex justify='center' fontSize='xl'>
                 <Button onClick={() => {
                     setIsDrawerOpen(true)
                     setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
@@ -167,7 +167,10 @@ const NodeGraph: React.FC = () => {
                 }} className="filter-button">FILTER BY MULTIPLE NODES</Button>
             </Flex>
 
-            <span id="svg-container" data-testid="node-graph"/>
+
+            <span id="svg-container" data-testid="node-graph">
+                <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
+            </span>
 
             <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}

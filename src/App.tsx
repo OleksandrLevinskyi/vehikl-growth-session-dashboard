@@ -10,7 +10,11 @@ import {
     Image, HStack, StackDivider, Divider, Center
 } from "@chakra-ui/react";
 import NodeGraph from "./components/node_graph/NodeGraph";
-import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
+import GrafanaDashboard, {
+    dateToUnixTimeStamp,
+    MAX_DATE,
+    MIN_DATE
+} from "./components/grafana_dashboard/GrafanaDashboard";
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import {User} from "./types/Types";
 import HeatMap from "./components/heat_map/HeatMap";
@@ -95,7 +99,7 @@ const App: React.FC = () => {
             <Divider/>
 
             <Routes>
-                <Route path="/dashboard/:date" element={<GrafanaDashboard colorMode={colorMode}/>}/>
+                <Route path="/dashboard" element={<GrafanaDashboard colorMode={colorMode}/>}/>
                 <Route path="/node-graph" element={<NodeGraph/>}/>
                 <Route path="/heat-map" element={<HeatMap/>}/>
 
