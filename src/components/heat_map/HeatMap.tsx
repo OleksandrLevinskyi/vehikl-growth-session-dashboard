@@ -17,12 +17,8 @@ const HeatMap: React.FC = () => {
         fetch('http://localhost:8000/heatmap')
             .then(res => res.json())
             .then(
-                (result) => {
-                    setData(result);
-                },
-                (error) => {
-                    console.error('error fetching data: ', error);
-                }
+                (result) => setData(result),
+                (error) => console.error('error fetching data: ', error),
             )
     }, []);
 
@@ -35,7 +31,7 @@ const HeatMap: React.FC = () => {
     const loadNewHeatMap = (data: any) => {
         d3.select('#heat-map').selectChildren().remove();
 
-        let margin = {top: 10, right: 10, bottom: 120, left: 120, tooltipTop: 140, tooltipLeft: 130},
+        const margin = {top: 10, right: 10, bottom: 120, left: 120, tooltipTop: 140, tooltipLeft: 130},
             width = window.innerWidth * .95 - margin.left - margin.right,
             height = window.innerWidth * .95 - margin.top - margin.bottom;
 
@@ -49,15 +45,14 @@ const HeatMap: React.FC = () => {
         let rows = d3.map(data, (dataPoint: any) => dataPoint.source);
         let cols = d3.map(data, (dataPoint: any) => dataPoint.target);
 
-
         let xScale = d3.scaleBand()
             .range([0, width])
             .domain(rows)
             .padding(0.05);
 
         svg.append("g")
-            .attr("transform", `translate(-${xScale.bandwidth()/2},${height})`)
-            .attr("id","x-axis")
+            .attr("transform", `translate(-${xScale.bandwidth() / 2},${height})`)
+            .attr("id", "x-axis")
             .call(d3.axisBottom(xScale).tickSize(0))
             .select(".domain").remove();
 
@@ -73,18 +68,18 @@ const HeatMap: React.FC = () => {
             .padding(0.05);
 
         svg.append("g")
-            .attr("id","y-axis")
+            .attr("id", "y-axis")
             .call(d3.axisLeft(yScale).tickSize(0))
             .select(".domain").remove();
 
-        const maxWeight = data.reduce((prev: any, current:any) =>{
+        const maxWeight = data.reduce((prev: any, current: any) => {
             return (prev.weight > current.weight) ? prev : current
-        }).weight?? 0;
+        }).weight ?? 0;
 
 
         let colorRange = d3.scaleSequential()
             .interpolator(d3.interpolateGreens)
-            .domain([1, maxWeight+OFFSET]);
+            .domain([1, maxWeight + OFFSET]);
 
         let tooltip = d3.select("#heat-map")
             .append("div")
@@ -101,7 +96,6 @@ const HeatMap: React.FC = () => {
         }
         const mousemove = (event: any) => {
             const cellData = event.target.__data__;
-            console.log(d3.pointer(event))
 
             tooltip
                 .html(`${cellData.source} + ${cellData.target}: ${cellData.weight}`)
@@ -127,7 +121,7 @@ const HeatMap: React.FC = () => {
             .attr("ry", 4)
             .attr("width", xScale.bandwidth())
             .attr("height", yScale.bandwidth())
-            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight+OFFSET))
+            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight + OFFSET))
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
@@ -135,7 +129,6 @@ const HeatMap: React.FC = () => {
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave)
     }
-
 
     return (
         <>

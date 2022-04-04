@@ -4,7 +4,7 @@ import {DateRangePicker, FocusedInputShape} from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 import {MAX_DATE, MIN_DATE, unixTimeStampToDate} from "../grafana_dashboard/GrafanaDashboard";
 import {useSearchParams, useNavigate, useParams} from "react-router-dom";
-import moment, {Moment} from "moment";
+import {Moment} from "moment";
 
 type CustomDatePickerProps = { startDate: any, setStartDate: any, endDate: any, setEndDate: any }
 
@@ -15,7 +15,6 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
     const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
 
     const history = useNavigate();
-    const params = useParams();
 
     let [searchParams, setSearchParams] = useSearchParams();
 
@@ -64,5 +63,4 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
             onFocusChange={focusedInput => setFocusedInput(focusedInput ?? null)}
         />
     </>)
-
 }

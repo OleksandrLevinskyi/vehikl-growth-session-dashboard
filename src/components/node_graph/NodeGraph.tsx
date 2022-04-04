@@ -5,9 +5,13 @@ import {
     Button, Center, Flex
 } from "@chakra-ui/react";
 import {Graph} from "./utils/Graph";
-import {Connection, NodeSummary} from "./utils/NodeSummary";
-import CustomDrawer from "../custom_drawer/CustomDrawer";
+import {NodeSummary} from "./utils/NodeSummary";
+import CustomDrawer, {
+    filterDataByMultipleNodesFilterSelection,
+    filterDataBySpecificNodeFilterSelection
+} from "../custom_drawer/CustomDrawer";
 import {Node, NodeGraphType} from "../../types/Types";
+import {useSearchParams} from "react-router-dom";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -23,6 +27,8 @@ const NodeGraph: React.FC = () => {
     const [nodeSummaries, setNodeSummaries] = useState<Array<NodeSummary>>();
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
     useEffect(() => {
         fetch('http://localhost:8000/nodegraph')
             .then(res => res.json())
@@ -34,25 +40,39 @@ const NodeGraph: React.FC = () => {
                     let nodeSummaries = [...result.nodes].map((node: Node) => graph.getNodeInfo(node));
                     setNodeSummaries(nodeSummaries);
                 },
-                (error) => {
-                    console.error('error fetching data: ', error);
-                }
+                (error) => console.error('error fetching data: ', error)
             )
     }, []);
 
-    // useEffect(() => {
-    //     if (data && nodeSummaries) {
-    //         loadNewNodeGraph(data)
-    //     }
-    // }, [nodeSummaries])
+    useEffect(() => {
+        const specificNodeFilter = searchParams.get('sn');
+        const multipleNodeFilter = searchParams.get('mn');
 
-    const loadNewNodeGraph = (data: NodeGraphType) => {
+        if (nodeSummaries) {
+            if (specificNodeFilter) {
+                const querySpecificNodeId = specificNodeFilter;
+                const filteredData = filterDataBySpecificNodeFilterSelection(nodeSummaries, Number(querySpecificNodeId));
+
+                setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE);
+                loadNewNodeGraph(filteredData, DRAWER_TYPE.SPECIFIC_NODE)
+            } else if (multipleNodeFilter) {
+                const queryMultipleNodeIds = multipleNodeFilter.split('.');
+                const filteredData = filterDataByMultipleNodesFilterSelection(nodeSummaries, queryMultipleNodeIds.map((id: string) => Number(id)));
+
+                setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES);
+                loadNewNodeGraph(filteredData, DRAWER_TYPE.MULTIPLE_NODES)
+            }
+        }
+    }, [nodeSummaries])
+
+    const loadNewNodeGraph = (data: NodeGraphType, displayMode = currentDrawerType) => {
         d3.select('#svg-container').selectChild().remove();
         d3.select('#svg-container').append('svg');
 
-        let svg: any = d3.select("#svg-container").selectChild(),
-            width = window.innerWidth,
-            height = window.innerHeight * .9;
+        const width = window.innerWidth;
+        const height = window.innerHeight * .9;
+
+        let svg: any = d3.select("#svg-container").selectChild();
 
         svg.attr('width', width)
             .attr('height', height);
@@ -67,7 +87,7 @@ const NodeGraph: React.FC = () => {
             .enter()
             .append("g");
 
-        let link = edge.append("line");
+        const link = edge.append("line");
 
         const nodeGroup = svg.append("g")
             .attr("class", "nodes")
@@ -79,7 +99,7 @@ const NodeGraph: React.FC = () => {
         nodeGroup.append("circle")
             .attr("r", 25)
             .attr("fill", (node: Node) => {
-                if (node.id == data.nodes[0].id && currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) return "#dd5f12";
+                if (node.id == data.nodes[0].id && displayMode == DRAWER_TYPE.SPECIFIC_NODE) return "#dd5f12";
                 return "#5593f0";
             });
 
@@ -107,8 +127,8 @@ const NodeGraph: React.FC = () => {
         drag_handler(nodeGroup as any);
 
         nodeGroup.on('click', (event: any) => {
-            let selectedNodeId = event.target.__data__.id;
-            let selectedNodeSummary = nodeSummaries!.filter((node: NodeSummary) => node.id === selectedNodeId)[0];
+            const selectedNodeId = event.target.__data__.id;
+            const selectedNodeSummary = nodeSummaries!.filter((node: NodeSummary) => node.id === selectedNodeId)[0];
 
             setSelectedNodeSummary(selectedNodeSummary);
             setIsDrawerOpen(true);
@@ -119,13 +139,13 @@ const NodeGraph: React.FC = () => {
             .on('zoom', (event: any) => svg.attr("transform", event.transform));
         zoom(d3.select('#svg-container').selectChild());
 
-        let edgeText = edge.append("text")
+        const edgeText = edge.append("text")
             .attr("class", "edge_text")
             .text((d: any) => d.weight);
 
         const simulation = d3.forceSimulation()
             .force("link", d3.forceLink(...data.edges as any).distance((d: any) => {
-                return currentDrawerType == DRAWER_TYPE.DEFAULT ?
+                return displayMode == DRAWER_TYPE.DEFAULT ?
                     Math.sqrt(1 / d.weight) * 10000 :
                     Math.sqrt(1 / d.weight) * 1000;
             })

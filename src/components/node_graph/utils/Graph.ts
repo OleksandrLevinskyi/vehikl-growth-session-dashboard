@@ -12,9 +12,9 @@ export class Graph {
         let id = node.id;
 
         let connections = [...this.data.edges]
-            .filter((edge: any) => edge.source === id || edge.target === id)
+            .filter((edge: any) => edge.source_id === id || edge.target_id === id)
             .map((edge: any): Connection => {
-                return {id: edge.source === id ? edge.target : edge.source, name: "", weight: edge.weight};
+                return {id: edge.source_id === id ? edge.target_id : edge.source_id, name: "", weight: edge.weight};
             })
             .sort((a, b) => b.weight - a.weight);
 

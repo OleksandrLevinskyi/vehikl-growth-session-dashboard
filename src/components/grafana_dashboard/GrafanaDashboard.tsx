@@ -3,10 +3,9 @@ import './GrafanaDashboard.css';
 import 'react-dates/lib/css/_datepicker.css';
 import {CustomDatePicker} from '../custom_date_picker/CustomDatePicker';
 import moment, {Moment} from "moment";
-import {Link as RouteLink} from "react-router-dom";
-import {Center, Flex, Text} from "@chakra-ui/react";
+import {Center, Flex} from "@chakra-ui/react";
 
-const DASHBOARD_URL = 'http://localhost:3005/d/ndxFSP07k/stats?orgId=1';
+const DASHBOARD_URL = 'http://localhost:3005/d/4va9cR87k/gsad?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
@@ -30,7 +29,7 @@ function GrafanaDashboard({colorMode}: any) {
             return;
         }
 
-        let varFrom = formatDate(startDate),
+        const varFrom = formatDate(startDate),
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
             to = dateToUnixTimeStamp(endDate);
@@ -43,14 +42,20 @@ function GrafanaDashboard({colorMode}: any) {
 
     return (
         <>
-                <span data-testid="custom-date-picker">
-                    <Flex p={2} justify='center' fontSize='xl'>
-                            <CustomDatePicker startDate={startDate} endDate={endDate} setStartDate={setStartDate}
-                                              setEndDate={setEndDate}/>
-                    </Flex>
-                </span>
-            {dashboardLink ? <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
-                <p>Please select a valid date range</p>}
+            <span data-testid="custom-date-picker">
+                <Flex justify='center' fontSize='xl' p='2'>
+                        <CustomDatePicker startDate={startDate}
+                                          endDate={endDate}
+                                          setStartDate={setStartDate}
+                                          setEndDate={setEndDate}/>
+                </Flex>
+            </span>
+
+            {
+                dashboardLink ?
+                    <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
+                    <Center fontSize='xl' p='5'>Please select a valid date range</Center>
+            }
         </>
     );
 }

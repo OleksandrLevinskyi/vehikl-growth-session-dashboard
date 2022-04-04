@@ -1,5 +1,5 @@
 export type Connection = {
-    id:number,
+    id: number,
     name: string,
     weight: number
 }
