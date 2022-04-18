@@ -1,10 +1,9 @@
 import './NodeGraph.css';
 import * as d3 from 'd3';
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Button, Center, Flex
 } from "@chakra-ui/react";
-import {Graph} from "./utils/Graph";
 import {NodeSummary} from "./utils/NodeSummary";
 import CustomDrawer, {
     filterDataByMultipleNodesFilterSelection,
@@ -12,6 +11,7 @@ import CustomDrawer, {
 } from "../custom_drawer/CustomDrawer";
 import {Node, NodeGraphType} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
+import {DataContext} from "../../DataContextProvider";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -20,29 +20,14 @@ export const DRAWER_TYPE = {
 }
 
 const NodeGraph: React.FC = () => {
-    const [data, setData] = useState<NodeGraphType>();
+    const {nodegraph: data, nodeSummaries} = useContext(DataContext);
+
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
 
-    const [nodeSummaries, setNodeSummaries] = useState<Array<NodeSummary>>();
     const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
 
     const [searchParams, setSearchParams] = useSearchParams();
-
-    useEffect(() => {
-        fetch('http://localhost:8000/nodegraph')
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setData(result);
-
-                    let graph = new Graph(result);
-                    let nodeSummaries = [...result.nodes].map((node: Node) => graph.getNodeInfo(node));
-                    setNodeSummaries(nodeSummaries);
-                },
-                (error) => console.error('error fetching data: ', error)
-            )
-    }, []);
 
     useEffect(() => {
         const specificNodeFilter = searchParams.get('sn');

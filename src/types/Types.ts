@@ -27,3 +27,9 @@ export type Edge = {
     weight: number,
     index: number
 }
+
+export type DataContextType = {
+    heatmap: any,
+    nodegraph: any,
+    nodeSummaries: any,
+}

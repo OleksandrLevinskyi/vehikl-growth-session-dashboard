@@ -1,6 +1,7 @@
 import './HeatMap.css';
 import * as d3 from 'd3';
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
+import {DataContext} from "../../DataContextProvider";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -11,22 +12,11 @@ export const DRAWER_TYPE = {
 const OFFSET = 150;
 
 const HeatMap: React.FC = () => {
-    const [data, setData] = useState<any>();
+    const {heatmap: data} = useContext(DataContext);
 
     useEffect(() => {
-        fetch('http://localhost:8000/heatmap')
-            .then(res => res.json())
-            .then(
-                (result) => setData(result),
-                (error) => console.error('error fetching data: ', error),
-            )
-    }, []);
-
-    useEffect(() => {
-        if (data) {
-            loadNewHeatMap(data)
-        }
-    }, [data])
+        if (data) loadNewHeatMap(data);
+    }, [data]);
 
     const loadNewHeatMap = (data: any) => {
         d3.select('#heat-map').selectChildren().remove();
