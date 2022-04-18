@@ -19,6 +19,7 @@ const HeatMap: React.FC = () => {
     }, [data]);
 
     const loadNewHeatMap = (data: any) => {
+        console.log(data)
         d3.select('#heat-map').selectChildren().remove();
 
         const margin = {top: 10, right: 10, bottom: 120, left: 120, tooltipTop: 140, tooltipLeft: 130},

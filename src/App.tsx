@@ -9,13 +9,11 @@ import {
     Link as StyledLink,
     Image, HStack, Divider, Center
 } from "@chakra-ui/react";
-import NodeGraph from "./components/node_graph/NodeGraph";
-import GrafanaDashboard from "./components/grafana_dashboard/GrafanaDashboard";
 import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import {User} from "./types/Types";
-import HeatMap from "./components/heat_map/HeatMap";
-import {BrowserRouter as Router, Link as RouteLink, Route, Routes} from "react-router-dom";
+import {Link as RouteLink} from "react-router-dom";
 import DataContextProvider from "./DataContextProvider";
+import RouterProvider from "./components/router_provider/RouterProvider";
 
 const App: React.FC = () => {
     const {colorMode, toggleColorMode} = useColorMode();
@@ -39,7 +37,7 @@ const App: React.FC = () => {
 
     return (
         <DataContextProvider>
-            <Router>
+            <RouterProvider>
                 <Flex p={2} fontSize='xl' alignItems='center'>
                     <Heading>GS Analytics Board</Heading>
 
@@ -96,14 +94,7 @@ const App: React.FC = () => {
 
                 <Divider/>
 
-                <Routes>
-                    <Route path="/dashboard" element={<GrafanaDashboard colorMode={colorMode}/>}/>
-                    <Route path="/node-graph" element={<NodeGraph/>}/>
-                    <Route path="/heat-map" element={<HeatMap/>}/>
-
-                    <Route path="/*" element={<GrafanaDashboard colorMode={colorMode}/>}/>
-                </Routes>
-            </Router>
+            </RouterProvider>
         </DataContextProvider>
     );
 };
