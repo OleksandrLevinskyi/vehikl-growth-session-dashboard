@@ -13,12 +13,31 @@ const DataContextProvider: React.FC = ({children}) => {
         let unmounted = false;
 
         const func = async () => {
-            const [nodegraph, heatmap] = await Promise.all([axios.get('http://localhost:8000/nodegraph'), axios.get('http://localhost:8000/heatmap')]);
+            const [
+                nodes,
+                edges,
+                nodeDictionary,
+                edgeDictionary,
+                connections,
+            ] = await Promise.all([
+                axios.get('http://localhost:8000/nodes'),
+                axios.get('http://localhost:8000/edges'),
+                axios.get('http://localhost:8000/dictionary/nodes'),
+                axios.get('http://localhost:8000/dictionary/edges'),
+                axios.get('http://localhost:8000/dictionary/connections'),
+            ]);
 
-            let graph = new Graph(nodegraph.data as any);
-            let nodeSummaries = [...(nodegraph.data as any).nodes].map((node: Node) => graph.getNodeInfo(node));
+            let graph = new Graph(nodes.data, edges.data);
+            let nodeSummaries = [...nodes.data].map((node: Node) => graph.getNodeInfo(node, connections.data[node.id.toString()], nodeDictionary.data, edgeDictionary.data));
 
-            if(!unmounted) setData({nodeSummaries, nodegraph: nodegraph.data, heatmap: heatmap.data})
+            if (!unmounted) setData({
+                nodeSummaries,
+                nodes: nodes.data,
+                edges: edges.data,
+                nodeDictionary: nodeDictionary.data,
+                edgeDictionary: edgeDictionary.data,
+                connections: connections.data
+            })
         }
 
         func();

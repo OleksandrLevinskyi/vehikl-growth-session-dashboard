@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './CustomDrawer.css';
 import {
     Button,
@@ -15,10 +15,10 @@ import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
 import CheckboxList from "../checkbox_list/CheckboxList";
 import RadioButtonList from "../radio_button_list/RadioButtonList";
 import {useNavigate} from "react-router-dom";
-import {Node, NodeGraphType} from "../../types/Types";
+import {Node} from "../../types/Types";
+import {DataContext} from "../../DataContextProvider";
 
 function CustomDrawer({
-                          data,
                           currentDrawerType,
                           selectedNodeSummary,
                           isDrawerOpen,
@@ -26,17 +26,19 @@ function CustomDrawer({
                           loadNewNodeGraph,
                           nodeSummaries
                       }: any) {
-    const [nodes, setNodes] = useState<any>([]);
+    const [filteredNodes, setFilteredNodes] = useState<any>([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
     const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
 
     const history = useNavigate();
 
+    const {nodes} = useContext(DataContext);
+
     useEffect(() => {
-        if (data?.nodes) {
-            setNodes([...data.nodes]);
+        if (nodes) {
+            setFilteredNodes([...nodes]);
         }
-    }, [data])
+    }, [nodes])
 
     function getDrawerHeader() {
         switch (currentDrawerType) {
@@ -54,13 +56,13 @@ function CustomDrawer({
             case DRAWER_TYPE.MULTIPLE_NODES:
                 return <span>
                     <CheckboxList
-                        nodes={nodes}
+                        nodes={filteredNodes}
                         multipleNodeIdsToFilterBy={multipleNodeIdsToFilterBy}
                         setMultipleNodeIdsToFilterBy={setMultipleNodeIdsToFilterBy}/>
                 </span>
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return <span>
-                    <RadioButtonList nodes={nodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
+                    <RadioButtonList nodes={filteredNodes} specificNodeIdToFilterBy={specificNodeIdToFilterBy}
                                      setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                 </span>
             default:
@@ -76,8 +78,8 @@ function CustomDrawer({
             return <Flex p="2">
                 <Input variant='flushed' placeholder='Enter node names to filter by ...'
                        onChange={(e: any) => {
-                           let nodes = data.nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
-                           setNodes(nodes);
+                           const selectedNodes = nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
+                           setFilteredNodes(selectedNodes);
                        }}/>
 
                 <Button onClick={() => {
@@ -104,7 +106,7 @@ function CustomDrawer({
                 size='sm'
                 onClose={() => {
                     setIsDrawerOpen(false);
-                    setNodes([...data.nodes]);
+                    setFilteredNodes([...nodes]);
                 }}
             >
                 <DrawerOverlay/>
@@ -154,7 +156,7 @@ export const filterDataByMultipleNodesFilterSelection = (nodeSummaries: Array<No
     return {nodes, edges};
 }
 
-export const filterDataBySpecificNodeFilterSelection = (nodeSummaries: Array<NodeSummary>, specificNodeIdToFilterBy: number): NodeGraphType => {
+export const filterDataBySpecificNodeFilterSelection = (nodeSummaries: Array<NodeSummary>, specificNodeIdToFilterBy: number) => {
     let filteredNodeSummary = nodeSummaries
         .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy)[0];
 

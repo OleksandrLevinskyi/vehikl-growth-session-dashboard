@@ -6,11 +6,6 @@ export type User = {
     is_vehikl_member: boolean;
 }
 
-export type NodeGraphType = {
-    nodes: Array<Node>,
-    edges: Array<Edge>
-}
-
 export type Node = {
     id: number,
     index: number,
@@ -22,14 +17,24 @@ export type Node = {
 }
 
 export type Edge = {
-    source: Node,
-    target: Node,
+    source: number,
+    target: number,
     weight: number,
-    index: number
 }
 
 export type DataContextType = {
-    heatmap: any,
-    nodegraph: any,
+    nodes:any,
+    edges:any,
+    nodeDictionary:any,
+    edgeDictionary:any,
+    connections:any,
     nodeSummaries: any,
+}
+
+export type NodeDictionary = {
+    [key: string]: string,
+}
+
+export type EdgeDictionary = {
+    [key: string]: number,
 }

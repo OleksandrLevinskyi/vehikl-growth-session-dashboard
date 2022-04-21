@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import './CheckboxList.css';
 import {Box, VStack} from "@chakra-ui/react";
+import {DataContext} from "../../DataContextProvider";
 
 function CheckboxList({nodes, multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy}: any) {
 

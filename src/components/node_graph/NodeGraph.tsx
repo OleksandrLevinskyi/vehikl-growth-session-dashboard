@@ -9,7 +9,7 @@ import CustomDrawer, {
     filterDataByMultipleNodesFilterSelection,
     filterDataBySpecificNodeFilterSelection
 } from "../custom_drawer/CustomDrawer";
-import {Node, NodeGraphType} from "../../types/Types";
+import {Node} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
 import {DataContext} from "../../DataContextProvider";
 
@@ -20,7 +20,7 @@ export const DRAWER_TYPE = {
 }
 
 const NodeGraph: React.FC = () => {
-    const {nodegraph: data, nodeSummaries} = useContext(DataContext);
+    const {nodeSummaries} = useContext(DataContext);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
@@ -50,7 +50,7 @@ const NodeGraph: React.FC = () => {
         }
     }, [nodeSummaries])
 
-    const loadNewNodeGraph = (data: NodeGraphType, displayMode = currentDrawerType) => {
+    const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
         d3.select('#svg-container').selectChild().remove();
         d3.select('#svg-container').append('svg');
 
@@ -177,7 +177,7 @@ const NodeGraph: React.FC = () => {
                 <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
             </span>
 
-            <CustomDrawer data={data} currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
+            <CustomDrawer currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
                           loadNewNodeGraph={loadNewNodeGraph} nodeSummaries={nodeSummaries}/>
         </>

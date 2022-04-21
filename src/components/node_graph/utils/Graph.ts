@@ -1,27 +1,24 @@
 import {Connection, NodeSummary} from "./NodeSummary";
-import {Node, NodeGraphType} from "../../../types/Types";
+import {Edge, EdgeDictionary, Node, NodeDictionary} from "../../../types/Types";
 
 export class Graph {
-    data: any;
+    nodes: any;
+    edges: any;
 
-    constructor(data: NodeGraphType) {
-        this.data = data;
+    constructor(nodes: Array<Node>, edges: Array<Edge>) {
+        this.nodes = nodes;
+        this.edges = edges;
     }
 
-    getNodeInfo(node: Node) {
-        let id = node.id;
+    getNodeInfo(node: Node, connections: Array<number>, nodeDictionary: NodeDictionary, edgeDictionary: EdgeDictionary) {
+        const modifiedConnections = connections.map((connectionId: number) => ({
+            id: connectionId,
+            name: nodeDictionary[connectionId],
+            weight: (connectionId > node.id ?
+                edgeDictionary[`${connectionId}_${node.id}`] :
+                edgeDictionary[`${node.id}_${connectionId}`]) ?? 0,
+        })).filter((con: Connection) => con.weight !== 0);
 
-        let connections = [...this.data.edges]
-            .filter((edge: any) => edge.source_id === id || edge.target_id === id)
-            .map((edge: any): Connection => {
-                return {id: edge.source_id === id ? edge.target_id : edge.source_id, name: "", weight: edge.weight};
-            })
-            .sort((a, b) => b.weight - a.weight);
-
-        connections.forEach((connection: Connection) => {
-            connection.name = this.data.nodes.filter((node: any) => node.id === connection.id)[0].name ?? "";
-        });
-
-        return new NodeSummary(node.id, node.name, connections);
+        return new NodeSummary(node.id, node.name, modifiedConnections);
     }
 }

@@ -15,6 +15,7 @@ export class NodeSummary {
         this.name = name;
         this.connections = connections;
 
-        this.formatted_connections = this.connections.map((connection: Connection) => `${connection.name}: ${connection.weight} time(s)`);
+        this.formatted_connections = this.connections.sort((a, b) => b.weight - a.weight)
+            .map((connection: Connection) => `${connection.name}: ${connection.weight} time(s)`);
     }
 }

@@ -1,6 +1,6 @@
 import './HeatMap.css';
 import * as d3 from 'd3';
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect} from "react";
 import {DataContext} from "../../DataContextProvider";
 
 export const DRAWER_TYPE = {
@@ -12,14 +12,13 @@ export const DRAWER_TYPE = {
 const OFFSET = 150;
 
 const HeatMap: React.FC = () => {
-    const {heatmap: data} = useContext(DataContext);
+    const {nodes, edges, nodeDictionary, edgeDictionary} = useContext(DataContext);
 
     useEffect(() => {
-        if (data) loadNewHeatMap(data);
-    }, [data]);
+        if (nodes && edges) loadNewHeatMap(nodes, edges);
+    }, [nodes, edges]);
 
-    const loadNewHeatMap = (data: any) => {
-        console.log(data)
+    const loadNewHeatMap = (nodes: any, edges: any) => {
         d3.select('#heat-map').selectChildren().remove();
 
         const margin = {top: 10, right: 10, bottom: 120, left: 120, tooltipTop: 140, tooltipLeft: 130},
@@ -33,8 +32,8 @@ const HeatMap: React.FC = () => {
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        let rows = d3.map(data, (dataPoint: any) => dataPoint.source);
-        let cols = d3.map(data, (dataPoint: any) => dataPoint.target);
+        let rows = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.source]);
+        let cols = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.target]);
 
         let xScale = d3.scaleBand()
             .range([0, width])
@@ -63,10 +62,7 @@ const HeatMap: React.FC = () => {
             .call(d3.axisLeft(yScale).tickSize(0))
             .select(".domain").remove();
 
-        const maxWeight = data.reduce((prev: any, current: any) => {
-            return (prev.weight > current.weight) ? prev : current
-        }).weight ?? 0;
-
+        const maxWeight = d3.max(Object.keys(edgeDictionary).map((key: string) => edgeDictionary[key])) ?? 0;
 
         let colorRange = d3.scaleSequential()
             .interpolator(d3.interpolateGreens)
@@ -89,7 +85,7 @@ const HeatMap: React.FC = () => {
             const cellData = event.target.__data__;
 
             tooltip
-                .html(`${cellData.source} + ${cellData.target}: ${cellData.weight}`)
+                .html(`${nodeDictionary[cellData.source]} + ${nodeDictionary[cellData.target]}: ${cellData.weight}`)
                 .style("left", (d3.pointer(event)[0] + margin.tooltipLeft) + "px")
                 .style("top", (d3.pointer(event)[1] + margin.tooltipTop) + "px")
         }
@@ -103,11 +99,11 @@ const HeatMap: React.FC = () => {
         }
 
         svg.selectAll()
-            .data(data, (dataPoint: any) => dataPoint.source + ':' + dataPoint.target)
+            .data(edges, (dataPoint: any) => nodeDictionary[dataPoint.source] + ':' + nodeDictionary[dataPoint.target])
             .enter()
             .append("rect")
-            .attr("x", (dataPoint: any) => xScale(dataPoint.source) as any)
-            .attr("y", (dataPoint: any) => yScale(dataPoint.target) as any)
+            .attr("x", (dataPoint: any) => xScale(nodeDictionary[dataPoint.source]) as any)
+            .attr("y", (dataPoint: any) => yScale(nodeDictionary[dataPoint.target]) as any)
             .attr("rx", 4)
             .attr("ry", 4)
             .attr("width", xScale.bandwidth())
