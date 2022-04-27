@@ -1,9 +1,7 @@
 import './NodeGraph.css';
 import * as d3 from 'd3';
 import React, {useContext, useEffect, useState} from "react";
-import {
-    Button, Center, Flex
-} from "@chakra-ui/react";
+import {Center} from "@chakra-ui/react";
 import CustomDrawer, {
     filterDataByMultipleNodesFilterSelection,
     filterDataBySpecificNodeFilterSelection
@@ -11,6 +9,7 @@ import CustomDrawer, {
 import {Node} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
 import {DataContext} from "../../DataContextProvider";
+import FilterButtons from "../filter_buttons/FilterButtons";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -158,24 +157,15 @@ const NodeGraph: React.FC = () => {
 
     return (
         <>
-            <Flex justify='center' fontSize='xl'>
-                <Button onClick={() => {
-                    setIsDrawerOpen(true)
-                    setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE)
-                }} className="filter-button">FILTER BY SPECIFIC NODE</Button>
-
-                <Button onClick={() => {
-                    setIsDrawerOpen(true)
-                    setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES)
-                }} className="filter-button">FILTER BY MULTIPLE NODES</Button>
-            </Flex>
+            <FilterButtons setIsDrawerOpen={setIsDrawerOpen} setCurrentDrawerType={setCurrentDrawerType}/>
 
 
             <span id="svg-container" data-testid="node-graph">
                 <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
             </span>
 
-            <CustomDrawer currentDrawerType={currentDrawerType} selectedNodeIdForDescription={selectedNodeIdForDescription}
+            <CustomDrawer currentDrawerType={currentDrawerType}
+                          selectedNodeIdForDescription={selectedNodeIdForDescription}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
                           loadNewNodeGraph={loadNewNodeGraph}/>
         </>

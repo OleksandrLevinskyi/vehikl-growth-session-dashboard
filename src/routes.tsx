@@ -6,7 +6,7 @@ import {useColorMode} from "@chakra-ui/react";
 import {RouteObject} from "react-router-dom";
 
 const ConfiguredGrafanaDashboard: React.VFC = () => {
-    const {colorMode, toggleColorMode} = useColorMode();
+    const {colorMode} = useColorMode();
 
     return (
         <GrafanaDashboard colorMode={colorMode}/>
