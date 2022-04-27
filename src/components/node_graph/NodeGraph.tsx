@@ -4,7 +4,6 @@ import React, {useContext, useEffect, useState} from "react";
 import {
     Button, Center, Flex
 } from "@chakra-ui/react";
-import {NodeSummary} from "./utils/NodeSummary";
 import CustomDrawer, {
     filterDataByMultipleNodesFilterSelection,
     filterDataBySpecificNodeFilterSelection
@@ -20,12 +19,12 @@ export const DRAWER_TYPE = {
 }
 
 const NodeGraph: React.FC = () => {
-    const {nodeSummaries} = useContext(DataContext);
+    const {nodes, edgeDictionary, nodeDictionary, connections} = useContext(DataContext);
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
 
-    const [selectedNodeSummary, setSelectedNodeSummary] = useState<NodeSummary>();
+    const [selectedNodeIdForDescription, setSelectedNodeIdForDescription] = useState<number>();
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,22 +32,22 @@ const NodeGraph: React.FC = () => {
         const specificNodeFilter = searchParams.get('sn');
         const multipleNodeFilter = searchParams.get('mn');
 
-        if (nodeSummaries) {
+        if (nodes) {
             if (specificNodeFilter) {
                 const querySpecificNodeId = specificNodeFilter;
-                const filteredData = filterDataBySpecificNodeFilterSelection(nodeSummaries, Number(querySpecificNodeId));
+                const filteredData = filterDataBySpecificNodeFilterSelection(Number(querySpecificNodeId), nodeDictionary, connections, edgeDictionary);
 
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE);
                 loadNewNodeGraph(filteredData, DRAWER_TYPE.SPECIFIC_NODE)
             } else if (multipleNodeFilter) {
                 const queryMultipleNodeIds = multipleNodeFilter.split('.');
-                const filteredData = filterDataByMultipleNodesFilterSelection(nodeSummaries, queryMultipleNodeIds.map((id: string) => Number(id)));
+                const filteredData = filterDataByMultipleNodesFilterSelection(queryMultipleNodeIds.map((id: string) => Number(id)), nodeDictionary, connections, edgeDictionary);
 
                 setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES);
                 loadNewNodeGraph(filteredData, DRAWER_TYPE.MULTIPLE_NODES)
             }
         }
-    }, [nodeSummaries])
+    }, [nodes])
 
     const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
         d3.select('#svg-container').selectChild().remove();
@@ -113,9 +112,8 @@ const NodeGraph: React.FC = () => {
 
         nodeGroup.on('click', (event: any) => {
             const selectedNodeId = event.target.__data__.id;
-            const selectedNodeSummary = nodeSummaries!.filter((node: NodeSummary) => node.id === selectedNodeId)[0];
 
-            setSelectedNodeSummary(selectedNodeSummary);
+            setSelectedNodeIdForDescription(selectedNodeId);
             setIsDrawerOpen(true);
             setCurrentDrawerType(DRAWER_TYPE.DEFAULT);
         })
@@ -177,9 +175,9 @@ const NodeGraph: React.FC = () => {
                 <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
             </span>
 
-            <CustomDrawer currentDrawerType={currentDrawerType} selectedNodeSummary={selectedNodeSummary}
+            <CustomDrawer currentDrawerType={currentDrawerType} selectedNodeIdForDescription={selectedNodeIdForDescription}
                           isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
-                          loadNewNodeGraph={loadNewNodeGraph} nodeSummaries={nodeSummaries}/>
+                          loadNewNodeGraph={loadNewNodeGraph}/>
         </>
     );
 }

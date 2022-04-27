@@ -11,7 +11,6 @@ import {
     DrawerOverlay, Input
 } from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
-import {Connection, NodeSummary} from "../node_graph/utils/NodeSummary";
 import CheckboxList from "../checkbox_list/CheckboxList";
 import RadioButtonList from "../radio_button_list/RadioButtonList";
 import {useNavigate} from "react-router-dom";
@@ -20,11 +19,10 @@ import {DataContext} from "../../DataContextProvider";
 
 function CustomDrawer({
                           currentDrawerType,
-                          selectedNodeSummary,
+                          selectedNodeIdForDescription,
                           isDrawerOpen,
                           setIsDrawerOpen,
                           loadNewNodeGraph,
-                          nodeSummaries
                       }: any) {
     const [filteredNodes, setFilteredNodes] = useState<any>([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
@@ -32,7 +30,7 @@ function CustomDrawer({
 
     const history = useNavigate();
 
-    const {nodes} = useContext(DataContext);
+    const {nodes, nodeDictionary, connections, edgeDictionary} = useContext(DataContext);
 
     useEffect(() => {
         if (nodes) {
@@ -47,7 +45,7 @@ function CustomDrawer({
             case DRAWER_TYPE.SPECIFIC_NODE:
                 return "Specific Node Filter";
             default:
-                return selectedNodeSummary?.name;
+                return nodeDictionary && selectedNodeIdForDescription ? nodeDictionary[selectedNodeIdForDescription] : "";
         }
     }
 
@@ -66,10 +64,7 @@ function CustomDrawer({
                                      setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                 </span>
             default:
-                return selectedNodeSummary?.formatted_connections.length! > 0 ?
-                    selectedNodeSummary?.formatted_connections.map((connection: string, key: number) => <p
-                        key={key}>{connection}</p>) :
-                    "no records";
+                return getNodeDescription(selectedNodeIdForDescription, connections, nodeDictionary, edgeDictionary);
         }
     }
 
@@ -86,12 +81,12 @@ function CustomDrawer({
                     if (currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES) {
                         history(`/node-graph?mn=${multipleNodeIdsToFilterBy.join('.')}`)
 
-                        loadNewNodeGraph(filterDataByMultipleNodesFilterSelection(nodeSummaries, multipleNodeIdsToFilterBy))
+                        loadNewNodeGraph(filterDataByMultipleNodesFilterSelection(multipleNodeIdsToFilterBy, nodeDictionary, connections, edgeDictionary))
                     }
                     if (currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) {
                         history(`/node-graph?sn=${specificNodeIdToFilterBy}`)
 
-                        loadNewNodeGraph(filterDataBySpecificNodeFilterSelection(nodeSummaries, specificNodeIdToFilterBy!))
+                        loadNewNodeGraph(filterDataBySpecificNodeFilterSelection(specificNodeIdToFilterBy!, nodeDictionary, connections, edgeDictionary))
                     }
                 }}>Apply</Button>
             </Flex>
@@ -128,45 +123,61 @@ function CustomDrawer({
 export default CustomDrawer;
 
 
-export const filterDataByMultipleNodesFilterSelection = (nodeSummaries: Array<NodeSummary>, multipleNodeIdsToFilterBy: Array<number>) => {
-    let filteredNodeSummaries: Array<NodeSummary> = nodeSummaries
-        .filter((nodeSummary: NodeSummary) => multipleNodeIdsToFilterBy.includes(nodeSummary.id));
-
+export const filterDataByMultipleNodesFilterSelection = (multipleNodeIdsToFilterBy: Array<number>, nodeDictionary: any, connections: any, edgeDictionary: any) => {
     let edges: any = [],
         nodes: any = [];
 
-    filteredNodeSummaries.forEach((nodeSummary: NodeSummary) => nodes.push({
-        id: nodeSummary.id,
-        name: nodeSummary.name
-    }))
+    multipleNodeIdsToFilterBy.forEach((nodeId: number) => nodes.push({
+        id: nodeId,
+        name: nodeDictionary[nodeId],
+    }));
 
-    filteredNodeSummaries.forEach((nodeSummary: NodeSummary) => {
-        if (multipleNodeIdsToFilterBy.includes(nodeSummary.id)) {
-            nodeSummary.connections.forEach(({id, name, weight}: Connection) => {
-                if (
-                    multipleNodeIdsToFilterBy.includes(id) &&
-                    !edges.filter((edge: any) => (edge.source === nodeSummary.id && edge.target === id) || (edge.source === id && edge.target === nodeSummary.id))[0]
-                ) {
-                    edges.push({source: nodeSummary.id, target: id, weight});
-                }
-            })
-        }
+    multipleNodeIdsToFilterBy.forEach((nodeId: number) => {
+        connections[nodeId].forEach((connectionId: number) => {
+            if (
+                multipleNodeIdsToFilterBy.includes(connectionId) &&
+                !edges.filter((edge: any) => (edge.source === nodeId && edge.target === connectionId) || (edge.source === connectionId && edge.target === nodeId))[0]
+            ) {
+                edges.push({
+                    source: nodeId,
+                    target: connectionId,
+                    weight: getWeight(nodeId, connectionId, edgeDictionary)
+                });
+            }
+        })
     });
 
-    return {nodes, edges};
+    return {nodes, edges: edges.filter((e: any) => e.weight > 0)};
 }
 
-export const filterDataBySpecificNodeFilterSelection = (nodeSummaries: Array<NodeSummary>, specificNodeIdToFilterBy: number) => {
-    let filteredNodeSummary = nodeSummaries
-        .filter((nodeSummary: NodeSummary) => nodeSummary.id === specificNodeIdToFilterBy)[0];
-
+export const filterDataBySpecificNodeFilterSelection = (specificNodeIdToFilterBy: number, nodeDictionary: any, connections: any, edgeDictionary: any) => {
     let edges: any = [],
-        nodes: Array<Node> = [{id: filteredNodeSummary.id, name: filteredNodeSummary.name} as Node];
+        nodes: Array<Node> = [{id: specificNodeIdToFilterBy, name: nodeDictionary[specificNodeIdToFilterBy]} as Node];
 
-    filteredNodeSummary.connections.forEach(({id, name, weight}: Connection) => {
-        nodes.push({id, name} as Node);
-        edges.push({source: specificNodeIdToFilterBy, target: id, weight});
+    connections[specificNodeIdToFilterBy].forEach((connectionId: number) => {
+        nodes.push({id: connectionId, name: nodeDictionary[connectionId]} as Node);
+        edges.push({
+            source: specificNodeIdToFilterBy,
+            target: connectionId,
+            weight: getWeight(specificNodeIdToFilterBy, connectionId, edgeDictionary)
+        });
     });
 
-    return {nodes, edges};
+    return {nodes, edges: edges.filter((e: any) => e.weight > 0)};
+}
+
+export const getWeight = (nodeId: number, connectionId: number, edgeDictionary: any) => {
+    return (connectionId > nodeId ?
+        edgeDictionary[`${connectionId}_${nodeId}`] :
+        edgeDictionary[`${nodeId}_${connectionId}`]) ?? 0;
+}
+
+export const getNodeDescription = (nodeId: number, connections: any, nodeDictionary: any, edgeDictionary: any) => {
+    return connections && nodeId && connections[nodeId].length > 0 ?
+        connections[nodeId].sort((a: number, b: number) => getWeight(nodeId, b, edgeDictionary) - getWeight(nodeId, a, edgeDictionary))
+            .map(
+                (connectionId: number) =>
+                    <p key={`desc_${nodeId}_${connectionId}`}>{nodeDictionary[connectionId]}: {getWeight(nodeId, connectionId, edgeDictionary)}</p>
+            ) :
+        "no records";
 }

@@ -28,7 +28,6 @@ export type DataContextType = {
     nodeDictionary:any,
     edgeDictionary:any,
     connections:any,
-    nodeSummaries: any,
 }
 
 export type NodeDictionary = {
