@@ -10,6 +10,7 @@ import {Node} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
 import {DataContext} from "../../DataContextProvider";
 import FilterButtons from "../filter_buttons/FilterButtons";
+import {DrawerContext} from "../../DrawerContextProvider";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',
@@ -20,8 +21,7 @@ export const DRAWER_TYPE = {
 const NodeGraph: React.FC = () => {
     const {nodes, edgeDictionary, nodeDictionary, connections} = useContext(DataContext);
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-    const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
+    const {currentDrawerType, setCurrentDrawerType, setIsDrawerOpen} = useContext(DrawerContext);
 
     const [selectedNodeIdForDescription, setSelectedNodeIdForDescription] = useState<number>();
 
@@ -157,17 +157,15 @@ const NodeGraph: React.FC = () => {
 
     return (
         <>
-            <FilterButtons setIsDrawerOpen={setIsDrawerOpen} setCurrentDrawerType={setCurrentDrawerType}/>
-
+            <FilterButtons/>
 
             <span id="svg-container" data-testid="node-graph">
                 <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
             </span>
 
-            <CustomDrawer currentDrawerType={currentDrawerType}
-                          selectedNodeIdForDescription={selectedNodeIdForDescription}
-                          isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}
-                          loadNewNodeGraph={loadNewNodeGraph}/>
+            <CustomDrawer
+                selectedNodeIdForDescription={selectedNodeIdForDescription}
+                loadNewNodeGraph={loadNewNodeGraph}/>
         </>
     );
 }

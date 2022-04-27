@@ -16,17 +16,17 @@ import RadioButtonList from "../radio_button_list/RadioButtonList";
 import {useNavigate} from "react-router-dom";
 import {Node} from "../../types/Types";
 import {DataContext} from "../../DataContextProvider";
+import {DrawerContext} from "../../DrawerContextProvider";
 
 function CustomDrawer({
-                          currentDrawerType,
                           selectedNodeIdForDescription,
-                          isDrawerOpen,
-                          setIsDrawerOpen,
                           loadNewNodeGraph,
                       }: any) {
     const [filteredNodes, setFilteredNodes] = useState<any>([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
     const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
+
+    const {currentDrawerType, isDrawerOpen, setIsDrawerOpen} = useContext(DrawerContext);
 
     const history = useNavigate();
 

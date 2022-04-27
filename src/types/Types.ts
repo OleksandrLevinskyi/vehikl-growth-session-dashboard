@@ -23,11 +23,18 @@ export type Edge = {
 }
 
 export type DataContextType = {
-    nodes:any,
-    edges:any,
-    nodeDictionary:any,
-    edgeDictionary:any,
-    connections:any,
+    nodes: any,
+    edges: any,
+    nodeDictionary: any,
+    edgeDictionary: any,
+    connections: any,
+}
+
+export type DrawerContextType = {
+    isDrawerOpen: boolean,
+    setIsDrawerOpen: any,
+    currentDrawerType: string,
+    setCurrentDrawerType: any,
 }
 
 export type NodeDictionary = {

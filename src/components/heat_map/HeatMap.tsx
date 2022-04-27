@@ -2,12 +2,7 @@ import './HeatMap.css';
 import * as d3 from 'd3';
 import React, {useContext, useEffect} from "react";
 import {DataContext} from "../../DataContextProvider";
-
-export const DRAWER_TYPE = {
-    DEFAULT: 'DEFAULT',
-    SPECIFIC_NODE: 'SPECIFIC_NODE',
-    MULTIPLE_NODES: 'MULTIPLE_NODES'
-}
+import FilterButtons from "../filter_buttons/FilterButtons";
 
 const OFFSET = 150;
 
@@ -32,10 +27,10 @@ const HeatMap: React.FC = () => {
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        let rows = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.source]);
-        let cols = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.target]);
+        const rows = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.source]);
+        const cols = d3.map(edges, (dataPoint: any) => nodeDictionary[dataPoint.target]);
 
-        let xScale = d3.scaleBand()
+        const xScale = d3.scaleBand()
             .range([0, width])
             .domain(rows)
             .padding(0.05);
@@ -52,7 +47,7 @@ const HeatMap: React.FC = () => {
             .attr("dominant-baseline", "central")
             .attr("transform", "translate(0,5)rotate(-90)")
 
-        let yScale = d3.scaleBand()
+        const yScale = d3.scaleBand()
             .range([height, 0])
             .domain(cols)
             .padding(0.05);
@@ -64,11 +59,11 @@ const HeatMap: React.FC = () => {
 
         const maxWeight = d3.max(Object.keys(edgeDictionary).map((key: string) => edgeDictionary[key])) ?? 0;
 
-        let colorRange = d3.scaleSequential()
+        const colorRange = d3.scaleSequential()
             .interpolator(d3.interpolateGreens)
             .domain([1, maxWeight + OFFSET]);
 
-        let tooltip = d3.select("#heat-map")
+        const tooltip = d3.select("#heat-map")
             .append("div")
             .style("opacity", 0)
             .attr("class", "tooltip");
@@ -119,6 +114,8 @@ const HeatMap: React.FC = () => {
 
     return (
         <>
+            <FilterButtons/>
+
             <span id="heat-map" data-testid="heat-map"/>
         </>
     );

@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import {Button, Flex} from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
+import {DrawerContext} from "../../DrawerContextProvider";
 
-function FilterButtons({setIsDrawerOpen, setCurrentDrawerType}: any) {
+function FilterButtons() {
+
+    const {setCurrentDrawerType, setIsDrawerOpen} = useContext(DrawerContext);
 
     return (
         <Flex justify='center' fontSize='xl'>
