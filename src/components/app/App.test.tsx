@@ -1,9 +1,7 @@
 import React from 'react';
-import {getByText, render, screen} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import App from './App';
 import userEvent from "@testing-library/user-event";
-import {createMemoryHistory} from 'history';
-import {BrowserRouter, Router, Routes} from "react-router-dom";
 
 import '@testing-library/jest-dom'
 
@@ -25,7 +23,7 @@ describe("Growth Sessions Dashboard App", () => {
         render(<App/>);
 
         const link = screen.getByText('Dashboard');
-        await userEvent.click(link);
+        userEvent.click(link);
 
         expect(window.location.pathname).toEqual('/dashboard')
 
@@ -37,7 +35,7 @@ describe("Growth Sessions Dashboard App", () => {
         render(<App/>);
 
         const link = screen.getByText('Node Graph');
-        await userEvent.click(link);
+        userEvent.click(link);
 
         expect(window.location.pathname).toEqual('/node-graph')
 
@@ -50,7 +48,7 @@ describe("Growth Sessions Dashboard App", () => {
         render(<App/>);
 
         const link = screen.getByText('Heat Map');
-        await userEvent.click(link);
+        userEvent.click(link);
 
         expect(window.location.pathname).toEqual('/heat-map')
 

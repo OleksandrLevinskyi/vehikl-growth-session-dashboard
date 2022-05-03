@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import './CustomDrawer.css';
 import {
     Button,
     Drawer,
@@ -15,13 +14,18 @@ import CheckboxList from "../checkbox_list/CheckboxList";
 import RadioButtonList from "../radio_button_list/RadioButtonList";
 import {useNavigate} from "react-router-dom";
 import {Node} from "../../types/Types";
-import {DataContext} from "../../DataContextProvider";
-import {DrawerContext} from "../../DrawerContextProvider";
+import {DataContext} from "../../providers/DataContextProvider";
+import {DrawerContext} from "../../providers/DrawerContextProvider";
 
-function CustomDrawer({
-                          selectedNodeIdForDescription,
-                          loadNewNodeGraph,
-                      }: any) {
+interface ICustomDrawerProps {
+    selectedNodeIdForDescription: number | undefined,
+    loadNewNodeGraph: any,
+}
+
+const CustomDrawer: React.FC<ICustomDrawerProps> = ({
+                                                        selectedNodeIdForDescription,
+                                                        loadNewNodeGraph,
+                                                    }) => {
     const [filteredNodes, setFilteredNodes] = useState<any>([]);
     const [multipleNodeIdsToFilterBy, setMultipleNodeIdsToFilterBy] = useState<Array<number>>([]);
     const [specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy] = useState<number | undefined>(undefined);
@@ -64,7 +68,7 @@ function CustomDrawer({
                                      setSpecificNodeIdToFilterBy={setSpecificNodeIdToFilterBy}/>
                 </span>
             default:
-                return getNodeDescription(selectedNodeIdForDescription, connections, nodeDictionary, edgeDictionary);
+                return getNodeDescription(selectedNodeIdForDescription!, connections, nodeDictionary, edgeDictionary);
         }
     }
 
@@ -121,7 +125,6 @@ function CustomDrawer({
 }
 
 export default CustomDrawer;
-
 
 export const filterDataByMultipleNodesFilterSelection = (multipleNodeIdsToFilterBy: Array<number>, nodeDictionary: any, connections: any, edgeDictionary: any) => {
     let edges: any = [],

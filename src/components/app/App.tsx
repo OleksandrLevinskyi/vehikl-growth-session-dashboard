@@ -7,13 +7,13 @@ import {
     useColorMode,
     HStack, Divider
 } from "@chakra-ui/react";
-import {User} from "./types/Types";
+import {User} from "../../types/Types";
 import {Link as RouteLink} from "react-router-dom";
-import DataContextProvider from "./DataContextProvider";
-import RouterProvider from "./components/router_provider/RouterProvider";
-import {DrawerContextProvider} from "./DrawerContextProvider";
-import {Login} from "./components/login/Login";
-import {ColorMode} from "./components/color_mode/ColorMode";
+import DataContextProvider from "../../providers/DataContextProvider";
+import RouterProvider from "../router_provider/RouterProvider";
+import {DrawerContextProvider} from "../../providers/DrawerContextProvider";
+import Login from "../login/Login";
+import ColorMode from "../color_mode/ColorMode";
 
 const App: React.FC = () => {
     const {colorMode, toggleColorMode} = useColorMode();

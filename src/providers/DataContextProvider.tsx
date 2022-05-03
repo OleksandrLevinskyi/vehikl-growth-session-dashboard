@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DataContextType} from "./types/Types";
+import {DataContextType} from "../types/Types";
 import axios from "axios";
 
 export const DataContext = React.createContext<DataContextType>({} as DataContextType);

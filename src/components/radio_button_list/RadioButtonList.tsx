@@ -1,8 +1,17 @@
 import React from 'react';
-import './RadioButtonList.css';
 import {Box, VStack} from "@chakra-ui/react";
 
-function RadioButtonList({nodes, specificNodeIdToFilterBy, setSpecificNodeIdToFilterBy}: any) {
+interface IRadioButtonListProps {
+    nodes: any,
+    specificNodeIdToFilterBy: any,
+    setSpecificNodeIdToFilterBy: any
+}
+
+const RadioButtonList: React.FC<IRadioButtonListProps> = ({
+                                                              nodes,
+                                                              specificNodeIdToFilterBy,
+                                                              setSpecificNodeIdToFilterBy
+                                                          }) => {
 
     function generateRadioButtons() {
         return nodes

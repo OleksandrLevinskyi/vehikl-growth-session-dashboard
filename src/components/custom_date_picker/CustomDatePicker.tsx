@@ -3,12 +3,17 @@ import 'react-dates/initialize';
 import {DateRangePicker, FocusedInputShape} from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
 import {MAX_DATE, MIN_DATE, unixTimeStampToDate} from "../grafana_dashboard/GrafanaDashboard";
-import {useSearchParams, useNavigate, useParams} from "react-router-dom";
+import {useSearchParams, useNavigate} from "react-router-dom";
 import {Moment} from "moment";
 
-type CustomDatePickerProps = { startDate: any, setStartDate: any, endDate: any, setEndDate: any }
+interface ICustomDatePickerProps {
+    startDate: any,
+    setStartDate: any,
+    endDate: any,
+    setEndDate: any
+}
 
-export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, setStartDate, endDate, setEndDate}) => {
+const CustomDatePicker: React.FC<ICustomDatePickerProps> = ({startDate, setStartDate, endDate, setEndDate}) => {
 
     const START_DATE = 'startDate';
     const END_DATE = 'endDate';
@@ -16,7 +21,7 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
 
     const history = useNavigate();
 
-    let [searchParams, setSearchParams] = useSearchParams();
+    let [searchParams] = useSearchParams();
 
     const props = {
         numberOfMonths: 1,
@@ -54,7 +59,6 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
                 setStartDate(startDate)
                 setEndDate(endDate)
 
-                //change url to be startdate-end
                 if (startDate && endDate) {
                     history(`/dashboard?date=${dateToUnixTimeStamp(startDate as any)}-${dateToUnixTimeStamp(endDate as any)}`)
                 }
@@ -64,3 +68,5 @@ export const CustomDatePicker: React.FC<CustomDatePickerProps> = ({startDate, se
         />
     </>)
 }
+
+export default CustomDatePicker;

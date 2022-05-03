@@ -1,14 +1,14 @@
 import React from 'react';
 import './Panel.css';
 
-type PanelProps = {
+interface IPanelProps {
     from: string,
     to: string,
     panelId: string
 }
 
-export const Panel: React.FC<PanelProps> = ({from, to, panelId}) => {
-    let src = `http://localhost:3005/d-solo/IvJGVgTnk/new-dashboard?orgId=1&from=${from}&to=${to}&panelId=${panelId}`
+const Panel: React.FC<IPanelProps> = ({from, to, panelId}) => {
+    const src = `http://localhost:3005/d-solo/IvJGVgTnk/new-dashboard?orgId=1&from=${from}&to=${to}&panelId=${panelId}`
 
     return (
         <iframe src={src} frameBorder="0"/>

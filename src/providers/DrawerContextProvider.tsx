@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {DrawerContextType} from "./types/Types";
-import {DRAWER_TYPE} from "./components/node_graph/NodeGraph";
+import {DrawerContextType} from "../types/Types";
+import {DRAWER_TYPE} from "../components/node_graph/NodeGraph";
 
 export const DrawerContext = React.createContext<DrawerContextType>({} as DrawerContextType);
 

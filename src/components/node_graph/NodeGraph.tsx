@@ -8,9 +8,9 @@ import CustomDrawer, {
 } from "../custom_drawer/CustomDrawer";
 import {Node} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
-import {DataContext} from "../../DataContextProvider";
+import {DataContext} from "../../providers/DataContextProvider";
 import FilterButtons from "../filter_buttons/FilterButtons";
-import {DrawerContext} from "../../DrawerContextProvider";
+import {DrawerContext} from "../../providers/DrawerContextProvider";
 
 export const DRAWER_TYPE = {
     DEFAULT: 'DEFAULT',

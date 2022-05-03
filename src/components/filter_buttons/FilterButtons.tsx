@@ -1,9 +1,9 @@
 import React, {useContext} from "react";
 import {Button, Flex} from "@chakra-ui/react";
 import {DRAWER_TYPE} from "../node_graph/NodeGraph";
-import {DrawerContext} from "../../DrawerContextProvider";
+import {DrawerContext} from "../../providers/DrawerContextProvider";
 
-function FilterButtons() {
+const FilterButtons: React.FC = () => {
 
     const {setCurrentDrawerType, setIsDrawerOpen} = useContext(DrawerContext);
 

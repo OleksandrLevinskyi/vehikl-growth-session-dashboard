@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import './GrafanaDashboard.css';
 import 'react-dates/lib/css/_datepicker.css';
-import {CustomDatePicker} from '../custom_date_picker/CustomDatePicker';
 import moment, {Moment} from "moment";
 import {Center, Flex} from "@chakra-ui/react";
+import CustomDatePicker from "../custom_date_picker/CustomDatePicker";
 
 const DASHBOARD_URL = 'http://localhost:3005/d/4va9cR87k/gsad?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
@@ -12,9 +12,13 @@ export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
 
 export const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
 export const unixTimeStampToDate = (date: number) => moment.unix(date / 1000);
-export const formatDate = (date: Moment) => date.format(DATE_FORMAT)
+export const formatDate = (date: Moment) => date.format(DATE_FORMAT);
 
-function GrafanaDashboard({colorMode}: any) {
+interface IGrafanaDashboardProps {
+    colorMode: "light" | "dark",
+}
+
+const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
