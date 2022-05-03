@@ -5,16 +5,15 @@ import {
     Heading,
     Spacer,
     useColorMode,
-    IconButton,
-    Link as StyledLink,
-    Image, HStack, Divider, Center
+    HStack, Divider
 } from "@chakra-ui/react";
-import {MoonIcon, SunIcon} from "@chakra-ui/icons";
 import {User} from "./types/Types";
 import {Link as RouteLink} from "react-router-dom";
 import DataContextProvider from "./DataContextProvider";
 import RouterProvider from "./components/router_provider/RouterProvider";
 import {DrawerContextProvider} from "./DrawerContextProvider";
+import {Login} from "./components/login/Login";
+import {ColorMode} from "./components/color_mode/ColorMode";
 
 const App: React.FC = () => {
     const {colorMode, toggleColorMode} = useColorMode();
@@ -57,40 +56,8 @@ const App: React.FC = () => {
                             </RouteLink>
                             <Divider orientation="vertical"/>
 
-                            {
-                                !loggedInUser ?
-                                    <StyledLink color='light-blue' size='large' padding={3}
-                                                href="http://localhost:8000/login/github">
-                                        LOG IN
-                                    </StyledLink>
-                                    :
-                                    <Flex onClick={() => setLoggedInUser(null)}>
-                                        <Center>
-                                            <Image
-                                                borderRadius='full'
-                                                boxSize='40px'
-                                                src={loggedInUser.avatar}
-                                                alt='User Icon'
-                                            />
-                                        </Center>
-                                        <StyledLink color='light-blue' size='large' padding={3} href="#">
-                                            LOG OUT
-                                        </StyledLink>
-                                    </Flex>
-                            }
-                            {
-                                colorMode === 'light' ?
-                                    <IconButton
-                                        aria-label={'Sun Icon'}
-                                        size='lg'
-                                        icon={<SunIcon/>}
-                                        onClick={toggleColorMode}/> :
-                                    <IconButton
-                                        aria-label={'Moon Icon'}
-                                        size='lg'
-                                        icon={<MoonIcon/>}
-                                        onClick={toggleColorMode}/>
-                            }
+                            <Login loggedInUser={loggedInUser} onClick={() => setLoggedInUser(null)}/>
+                            <ColorMode colorMode={colorMode} onClick={toggleColorMode}/>
                         </HStack>
                     </Flex>
 
