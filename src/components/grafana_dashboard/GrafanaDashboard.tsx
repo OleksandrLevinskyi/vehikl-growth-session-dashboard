@@ -58,7 +58,7 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
             {
                 dashboardLink ?
                     <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
-                    <Center fontSize='xl' p='5'>Please select a valid date range</Center>
+                    <Center fontSize='xl' p='5'>Please select a valid date range.</Center>
             }
         </>
     );

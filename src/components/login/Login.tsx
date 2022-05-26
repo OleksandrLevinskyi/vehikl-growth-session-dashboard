@@ -12,7 +12,7 @@ const Login: React.FC<ILoginProps> = ({loggedInUser, onClick}) => {
         {
             !loggedInUser ?
                 <Link color="light-blue" size="large" padding={3}
-                      href="http://localhost:8000/login/github">
+                      href="http://localhost:8001/login/github">
                     LOG IN
                 </Link>
                 :

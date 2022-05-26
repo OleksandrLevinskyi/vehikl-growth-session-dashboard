@@ -3,7 +3,14 @@ import ReactDOM from 'react-dom';
 import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
 import {ChakraProvider} from '@chakra-ui/react'
+import axios from "axios";
+import Cookies from "js-cookie";
 
+axios.defaults.withCredentials = true;
+axios.get('http://localhost:8001/sanctum/csrf-cookie').then(response => {
+    // Login...
+});
+// axios.defaults.headers.common['X-XSRF-TOKEN'] = Cookies.get('XSRF-TOKEN') ?? '';
 
 ReactDOM.render(
     <React.StrictMode>

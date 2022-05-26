@@ -11,27 +11,32 @@ import {User} from "../../types/Types";
 import {Link as RouteLink} from "react-router-dom";
 import DataContextProvider from "../../providers/DataContextProvider";
 import RouterProvider from "../router_provider/RouterProvider";
-import {DrawerContextProvider} from "../../providers/DrawerContextProvider";
 import Login from "../login/Login";
 import ColorMode from "../color_mode/ColorMode";
+import axios from "axios";
+import Cookies from 'js-cookie';
+import DrawerContextProvider from "../../providers/DrawerContextProvider";
 
 const App: React.FC = () => {
     const {colorMode, toggleColorMode} = useColorMode();
     const [loggedInUser, setLoggedInUser] = useState<User | null>();
 
     useEffect(() => {
-        let hashToken = window.location.hash.slice(1);
-        if (hashToken) {
-            fetch(`http://localhost:8000/social_user/${hashToken}`)
-                .then((res) => res.json())
-                .then(
-                    (result) => {
-                        setLoggedInUser(result);
-                    },
-                    (error) => {
-                        console.error('error fetching data: ', error);
-                    }
-                )
+        // const hashToken = Cookies.get('token');
+        let unmounted = false;
+
+        // if (!hashToken) return;
+
+        const getUserFromApi = async () => {
+            // const user = await axios.get(`http://localhost:8001/api/social_user`);
+            //
+            // if (!unmounted && user) setLoggedInUser(user.data);
+        }
+
+        getUserFromApi();
+
+        return () => {
+            unmounted = true;
         }
     }, []);
 

@@ -4,7 +4,7 @@ import {DRAWER_TYPE} from "../components/node_graph/NodeGraph";
 
 export const DrawerContext = React.createContext<DrawerContextType>({} as DrawerContextType);
 
-export const DrawerContextProvider: React.FC = ({children}) => {
+const DrawerContextProvider: React.FC = ({children}) => {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [currentDrawerType, setCurrentDrawerType] = useState<string>(DRAWER_TYPE.DEFAULT);
@@ -15,3 +15,5 @@ export const DrawerContextProvider: React.FC = ({children}) => {
         </DrawerContext.Provider>
     );
 };
+
+export default DrawerContextProvider;
