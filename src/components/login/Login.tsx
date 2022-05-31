@@ -1,13 +1,11 @@
-import {User} from "../../types/Types";
 import {Center, Flex, Image, Link} from "@chakra-ui/react";
-import React from "react";
+import React, {useContext} from "react";
+import {LoginContext} from "../../providers/LoginContextProvider";
 
-interface ILoginProps {
-    loggedInUser: User | null | undefined,
-    onClick: () => void
-}
+const Login: React.FC = () => {
 
-const Login: React.FC<ILoginProps> = ({loggedInUser, onClick}) => {
+    const {loggedInUser, setLoggedInUser} = useContext(LoginContext);
+
     return <>
         {
             !loggedInUser ?
@@ -16,7 +14,7 @@ const Login: React.FC<ILoginProps> = ({loggedInUser, onClick}) => {
                     LOG IN
                 </Link>
                 :
-                <Flex onClick={onClick}>
+                <Flex onClick={()=>setLoggedInUser(null)}>
                     <Center>
                         <Image
                             borderRadius="full"
@@ -25,7 +23,7 @@ const Login: React.FC<ILoginProps> = ({loggedInUser, onClick}) => {
                             alt="User Icon"
                         />
                     </Center>
-                    <Link color="light-blue" size="large" padding={3} href="#">
+                    <Link color="light-blue" size="large" padding={3} href="http://localhost:8001/logout">
                         LOG OUT
                     </Link>
                 </Flex>

@@ -37,6 +37,11 @@ export type DrawerContextType = {
     setCurrentDrawerType: any,
 }
 
+export type LoginContextType = {
+    loggedInUser: any,
+    setLoggedInUser: any,
+}
+
 export type NodeDictionary = {
     [key: string]: string,
 }
