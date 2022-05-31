@@ -4,7 +4,7 @@ import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
 import {ChakraProvider} from '@chakra-ui/react'
 import axios from "axios";
-import Cookies from "js-cookie";
+import LoginContextProvider from "./providers/LoginContextProvider";
 
 axios.defaults.withCredentials = true;
 axios.get('http://localhost:8001/sanctum/csrf-cookie').then(response => {
@@ -15,7 +15,9 @@ axios.get('http://localhost:8001/sanctum/csrf-cookie').then(response => {
 ReactDOM.render(
     <React.StrictMode>
         <ChakraProvider>
-            <App/>
+            <LoginContextProvider>
+                <App/>
+            </LoginContextProvider>
         </ChakraProvider>
     </React.StrictMode>
     ,

@@ -114,8 +114,6 @@ const HeatMap: React.FC = () => {
 
     return (
         <>
-            <FilterButtons/>
-
             <span id="heat-map" data-testid="heat-map"/>
         </>
     );
