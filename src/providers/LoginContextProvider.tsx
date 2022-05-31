@@ -16,9 +16,12 @@ const LoginContextProvider: React.FC = ({children}) => {
         if (!hashToken) return;
 
         const getUserFromApi = async () => {
+
             const user = await axios.get(`http://localhost:8001/api/social_user/${hashToken}`);
 
-            if (!unmounted && user) setLoggedInUser(user.data);
+            if (!unmounted && user) {
+                setLoggedInUser(user.data);
+            }
         }
 
         getUserFromApi();
