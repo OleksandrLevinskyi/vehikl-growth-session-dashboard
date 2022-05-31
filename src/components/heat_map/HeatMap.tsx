@@ -2,7 +2,6 @@ import './HeatMap.css';
 import * as d3 from 'd3';
 import React, {useContext, useEffect} from "react";
 import {DataContext} from "../../providers/DataContextProvider";
-import FilterButtons from "../filter_buttons/FilterButtons";
 
 const OFFSET = 150;
 
