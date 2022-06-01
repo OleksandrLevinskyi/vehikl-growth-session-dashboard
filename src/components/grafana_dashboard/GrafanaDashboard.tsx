@@ -5,7 +5,6 @@ import moment, {Moment} from "moment";
 import {Center, Flex} from "@chakra-ui/react";
 import CustomDatePicker from "../custom_date_picker/CustomDatePicker";
 
-const DASHBOARD_URL = 'http://localhost:3005/d/4va9cR87k/gsad?orgId=1';
 export const DATE_FORMAT = 'YYYY-MM-DD'
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
@@ -25,7 +24,7 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
 
     useEffect(() => {
         getDashboardLink();
-    }, [colorMode])
+    }, [colorMode]);
 
     function getDashboardLink() {
         if (!startDate || !endDate) {
@@ -37,7 +36,8 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
             varTo = formatDate(endDate),
             from = dateToUnixTimeStamp(startDate),
             to = dateToUnixTimeStamp(endDate);
-        setDashboardLink(`${DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=${colorMode}&kiosk`);
+
+        setDashboardLink(`${process.env.REACT_APP_GRAFANA_DASHBOARD_URL}&var-from=${varFrom}&var-to=${varTo}&from=${from}&to=${to}&theme=${colorMode}&kiosk`);
     }
 
     useEffect(() => {

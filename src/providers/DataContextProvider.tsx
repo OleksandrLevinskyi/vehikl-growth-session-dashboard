@@ -19,11 +19,11 @@ const DataContextProvider: React.FC = ({children}) => {
                 edgeDictionary,
                 connections,
             ] = await Promise.all([
-                axios.get('http://localhost:8001/api/nodes'),
-                axios.get('http://localhost:8001/api/edges'),
-                axios.get('http://localhost:8001/api/dictionary/nodes'),
-                axios.get('http://localhost:8001/api/dictionary/edges'),
-                axios.get('http://localhost:8001/api/dictionary/connections'),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/nodes`),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/edges`),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/dictionary/nodes`),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/dictionary/edges`),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/dictionary/connections`),
             ]);
 
             if (!unmounted) setData({

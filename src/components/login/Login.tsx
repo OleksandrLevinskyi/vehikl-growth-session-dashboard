@@ -10,11 +10,11 @@ const Login: React.FC = () => {
         {
             !loggedInUser ?
                 <Link color="light-blue" size="large" padding={3}
-                      href="http://localhost:8001/login/github">
+                      href={`${process.env.REACT_APP_API_URL}/login/github`}>
                     LOG IN
                 </Link>
                 :
-                <Flex onClick={()=>setLoggedInUser(null)}>
+                <Flex onClick={() => setLoggedInUser(null)}>
                     <Center>
                         <Image
                             borderRadius="full"
@@ -23,7 +23,7 @@ const Login: React.FC = () => {
                             alt="User Icon"
                         />
                     </Center>
-                    <Link color="light-blue" size="large" padding={3} href="http://localhost:8001/logout">
+                    <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}>
                         LOG OUT
                     </Link>
                 </Flex>

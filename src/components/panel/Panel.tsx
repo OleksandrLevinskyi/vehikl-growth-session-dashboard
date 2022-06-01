@@ -8,7 +8,7 @@ interface IPanelProps {
 }
 
 const Panel: React.FC<IPanelProps> = ({from, to, panelId}) => {
-    const src = `http://localhost:3005/d-solo/IvJGVgTnk/new-dashboard?orgId=1&from=${from}&to=${to}&panelId=${panelId}`
+    const src = `${process.env.REACT_APP_GRAFANA_URL}/d-solo/IvJGVgTnk/new-dashboard?orgId=1&from=${from}&to=${to}&panelId=${panelId}`
 
     return (
         <iframe src={src} frameBorder="0"/>

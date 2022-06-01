@@ -7,10 +7,9 @@ import axios from "axios";
 import LoginContextProvider from "./providers/LoginContextProvider";
 
 axios.defaults.withCredentials = true;
-axios.get('http://localhost:8001/sanctum/csrf-cookie').then(response => {
+axios.get(`${process.env.REACT_APP_API_URL}/sanctum/csrf-cookie`).then(response => {
     // Login...
 });
-// axios.defaults.headers.common['X-XSRF-TOKEN'] = Cookies.get('XSRF-TOKEN') ?? '';
 
 ReactDOM.render(
     <React.StrictMode>
