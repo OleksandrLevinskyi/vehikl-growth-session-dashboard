@@ -21,7 +21,7 @@ const LoggedInUI: React.FC = () => {
             <DrawerContextProvider>
                 <RouterProvider>
                     <Flex p={2} fontSize='xl' alignItems='center'>
-                        <Heading>GS Analytics Board</Heading>
+                        <Heading>GS Analytics Dashboard</Heading>
 
                         <Spacer/>
 

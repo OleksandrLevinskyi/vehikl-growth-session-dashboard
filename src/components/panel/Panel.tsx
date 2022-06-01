@@ -1,5 +1,5 @@
-import React from 'react';
-import './Panel.css';
+import React from "react";
+import "./Panel.css";
 
 interface IPanelProps {
     from: string,

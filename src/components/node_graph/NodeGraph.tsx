@@ -1,5 +1,5 @@
-import './NodeGraph.css';
-import * as d3 from 'd3';
+import "./NodeGraph.css";
+import * as d3 from "d3";
 import React, {useContext, useEffect, useState} from "react";
 import {Center} from "@chakra-ui/react";
 import CustomDrawer, {
@@ -13,9 +13,9 @@ import FilterButtons from "../filter_buttons/FilterButtons";
 import {DrawerContext} from "../../providers/DrawerContextProvider";
 
 export const DRAWER_TYPE = {
-    DEFAULT: 'DEFAULT',
-    SPECIFIC_NODE: 'SPECIFIC_NODE',
-    MULTIPLE_NODES: 'MULTIPLE_NODES'
+    DEFAULT: "DEFAULT",
+    SPECIFIC_NODE: "SPECIFIC_NODE",
+    MULTIPLE_NODES: "MULTIPLE_NODES"
 }
 
 const NodeGraph: React.FC = () => {
@@ -28,8 +28,8 @@ const NodeGraph: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
-        const specificNodeFilter = searchParams.get('sn');
-        const multipleNodeFilter = searchParams.get('mn');
+        const specificNodeFilter = searchParams.get("sn");
+        const multipleNodeFilter = searchParams.get("mn");
 
         if (nodes) {
             if (specificNodeFilter) {
@@ -39,7 +39,7 @@ const NodeGraph: React.FC = () => {
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE);
                 loadNewNodeGraph(filteredData, DRAWER_TYPE.SPECIFIC_NODE)
             } else if (multipleNodeFilter) {
-                const queryMultipleNodeIds = multipleNodeFilter.split('.');
+                const queryMultipleNodeIds = multipleNodeFilter.split(".");
                 const filteredData = filterDataByMultipleNodesFilterSelection(queryMultipleNodeIds.map((id: string) => Number(id)), nodeDictionary, connections, edgeDictionary);
 
                 setCurrentDrawerType(DRAWER_TYPE.MULTIPLE_NODES);
@@ -49,18 +49,18 @@ const NodeGraph: React.FC = () => {
     }, [nodes])
 
     const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
-        d3.select('#svg-container').selectChild().remove();
-        d3.select('#svg-container').append('svg');
+        d3.select("#svg-container").selectChild().remove();
+        d3.select("#svg-container").append("svg");
 
         const width = window.innerWidth;
         const height = window.innerHeight * .9;
 
         let svg: any = d3.select("#svg-container").selectChild();
 
-        svg.attr('width', width)
-            .attr('height', height);
+        svg.attr("width", width)
+            .attr("height", height);
 
-        svg = svg.append('g')
+        svg = svg.append("g")
             .attr("class", "node-graph");
 
         const edge = svg.append("g")
@@ -88,8 +88,8 @@ const NodeGraph: React.FC = () => {
 
         nodeGroup.append("text")
             .text((node: Node) => node.name)
-            .attr('class', 'label')
-            .attr('text-anchor', 'middle')
+            .attr("class", "label")
+            .attr("text-anchor", "middle")
 
         const drag_handler = d3.drag()
             .on("start", (event: any, node: any) => {
@@ -109,7 +109,7 @@ const NodeGraph: React.FC = () => {
 
         drag_handler(nodeGroup as any);
 
-        nodeGroup.on('click', (event: any) => {
+        nodeGroup.on("click", (event: any) => {
             const selectedNodeId = event.target.__data__.id;
 
             setSelectedNodeIdForDescription(selectedNodeId);
@@ -118,8 +118,8 @@ const NodeGraph: React.FC = () => {
         })
 
         const zoom = d3.zoom()
-            .on('zoom', (event: any) => svg.attr("transform", event.transform));
-        zoom(d3.select('#svg-container').selectChild());
+            .on("zoom", (event: any) => svg.attr("transform", event.transform));
+        zoom(d3.select("#svg-container").selectChild());
 
         const edgeText = edge.append("text")
             .attr("class", "edge_text")
@@ -160,7 +160,7 @@ const NodeGraph: React.FC = () => {
             <FilterButtons/>
 
             <span id="svg-container" data-testid="node-graph">
-                <Center fontSize='xl' p='5'>Use options above to generate a node graph.</Center>
+                <Center fontSize="xl" p="5">Use options above to generate a node graph.</Center>
             </span>
 
             <CustomDrawer

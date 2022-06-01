@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
-import 'react-dates/initialize';
-import {DateRangePicker, FocusedInputShape} from 'react-dates';
-import 'react-dates/lib/css/_datepicker.css';
+import "react-dates/initialize";
+import {DateRangePicker, FocusedInputShape} from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
 import {MAX_DATE, MIN_DATE, unixTimeStampToDate} from "../grafana_dashboard/GrafanaDashboard";
 import {useSearchParams, useNavigate} from "react-router-dom";
 import {Moment} from "moment";
@@ -15,8 +15,8 @@ interface ICustomDatePickerProps {
 
 const CustomDatePicker: React.FC<ICustomDatePickerProps> = ({startDate, setStartDate, endDate, setEndDate}) => {
 
-    const START_DATE = 'startDate';
-    const END_DATE = 'endDate';
+    const START_DATE = "startDate";
+    const END_DATE = "endDate";
     const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>(null);
 
     const history = useNavigate();
@@ -26,7 +26,7 @@ const CustomDatePicker: React.FC<ICustomDatePickerProps> = ({startDate, setStart
     const props = {
         numberOfMonths: 1,
         minDate: MIN_DATE,
-        displayFormat: 'YYYY-MM-DD',
+        displayFormat: "YYYY-MM-DD",
         isOutsideRange: (day: any) => {
             const unixTimestamp = day.unix()
             return !(unixTimestamp >= MIN_DATE.unix() && unixTimestamp <= MAX_DATE.unix());
@@ -36,12 +36,12 @@ const CustomDatePicker: React.FC<ICustomDatePickerProps> = ({startDate, setStart
     const dateToUnixTimeStamp = (date: Moment) => date.unix() * 1000;
 
     useEffect(() => {
-        let date = searchParams.get('date');
+        let date = searchParams.get("date");
 
         if (!date) {
             history(`/dashboard?date=${dateToUnixTimeStamp(MIN_DATE)}-${dateToUnixTimeStamp(MAX_DATE)}`)
         } else {
-            const [queryStartDate, queryEndDate] = date.split('-');
+            const [queryStartDate, queryEndDate] = date.split("-");
 
             setStartDate(unixTimeStampToDate(Number(queryStartDate)));
             setEndDate(unixTimeStampToDate(Number(queryEndDate)));

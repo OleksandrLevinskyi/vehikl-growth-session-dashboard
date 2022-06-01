@@ -1,6 +1,7 @@
-import {Center, Flex, Image, Link} from "@chakra-ui/react";
+import {Button, Center, Flex, Image, Link} from "@chakra-ui/react";
 import React, {useContext} from "react";
 import {LoginContext} from "../../providers/LoginContextProvider";
+import {BsGithub} from "react-icons/bs";
 
 const Login: React.FC = () => {
 
@@ -11,10 +12,12 @@ const Login: React.FC = () => {
             !loggedInUser ?
                 <Link color="light-blue" size="large" padding={3}
                       href={`${process.env.REACT_APP_API_URL}/login/github`}>
-                    LOG IN
+                    <Button size='lg' rightIcon={<BsGithub size='25'/>}>
+                        LOG IN WITH
+                    </Button>
                 </Link>
                 :
-                <Flex onClick={() => setLoggedInUser(null)}>
+                <Flex>
                     <Center>
                         <Image
                             borderRadius="full"
@@ -23,7 +26,8 @@ const Login: React.FC = () => {
                             alt="User Icon"
                         />
                     </Center>
-                    <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}>
+                    <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}
+                          onClick={() => setLoggedInUser(null)}>
                         LOG OUT
                     </Link>
                 </Flex>

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from "react";
 import {
     Button,
     Drawer,
@@ -75,15 +75,15 @@ const CustomDrawer: React.FC<ICustomDrawerProps> = ({
     function getInputs() {
         if (currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES || currentDrawerType == DRAWER_TYPE.SPECIFIC_NODE) {
             return <Flex p="2">
-                <Input variant='flushed' placeholder='Enter node names to filter by ...'
+                <Input variant="flushed" placeholder="Enter node names to filter by ..."
                        onChange={(e: any) => {
                            const selectedNodes = nodes.filter((node: any) => node.name.toUpperCase().startsWith(e.target.value.toUpperCase()));
                            setFilteredNodes(selectedNodes);
                        }}/>
 
-                <Button onClick={() => {
+                <Button ml="5" onClick={() => {
                     if (currentDrawerType == DRAWER_TYPE.MULTIPLE_NODES) {
-                        history(`/node-graph?mn=${multipleNodeIdsToFilterBy.join('.')}`)
+                        history(`/node-graph?mn=${multipleNodeIdsToFilterBy.join(".")}`)
 
                         loadNewNodeGraph(filterDataByMultipleNodesFilterSelection(multipleNodeIdsToFilterBy, nodeDictionary, connections, edgeDictionary))
                     }
@@ -101,8 +101,8 @@ const CustomDrawer: React.FC<ICustomDrawerProps> = ({
         <>
             <Drawer
                 isOpen={isDrawerOpen}
-                placement='right'
-                size='sm'
+                placement="right"
+                size="sm"
                 onClose={() => {
                     setIsDrawerOpen(false);
                     setFilteredNodes([...nodes]);

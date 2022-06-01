@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import './GrafanaDashboard.css';
-import 'react-dates/lib/css/_datepicker.css';
+import React, {useEffect, useState} from "react";
+import "./GrafanaDashboard.css";
+import "react-dates/lib/css/_datepicker.css";
 import moment, {Moment} from "moment";
 import {Center, Flex} from "@chakra-ui/react";
 import CustomDatePicker from "../custom_date_picker/CustomDatePicker";
 
-export const DATE_FORMAT = 'YYYY-MM-DD'
+export const DATE_FORMAT = "YYYY-MM-DD"
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
 export const MAX_DATE = moment().hours(23).minutes(59).seconds(59);
 
@@ -47,7 +47,7 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
     return (
         <>
             <span data-testid="custom-date-picker">
-                <Flex justify='center' fontSize='xl' p='2'>
+                <Flex justify="center" fontSize="xl" p="2">
                         <CustomDatePicker startDate={startDate}
                                           endDate={endDate}
                                           setStartDate={setStartDate}
@@ -58,7 +58,7 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
             {
                 dashboardLink ?
                     <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
-                    <Center fontSize='xl' p='5'>Please select a valid date range.</Center>
+                    <Center fontSize="xl" p="5">Please select a valid date range.</Center>
             }
         </>
     );

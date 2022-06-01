@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import './App.css';
+import React, {useContext} from "react";
+import "./App.css";
 import {LoginContext} from "../../providers/LoginContextProvider";
 import LoggedInUI from "../logged_in_ui/LoggedInUI";
 import LoggedOutUI from "../logged_out_ui/LoggedOutUI";
