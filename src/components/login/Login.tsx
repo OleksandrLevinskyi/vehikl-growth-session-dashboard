@@ -2,6 +2,7 @@ import {Button, Center, Flex, Image, Link} from "@chakra-ui/react";
 import React, {useContext} from "react";
 import {LoginContext} from "../../providers/LoginContextProvider";
 import {BsGithub} from "react-icons/bs";
+import Cookies from "js-cookie";
 
 const Login: React.FC = () => {
 
@@ -27,7 +28,10 @@ const Login: React.FC = () => {
                         />
                     </Center>
                     <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}
-                          onClick={() => setLoggedInUser(null)}>
+                          onClick={() => {
+                              setLoggedInUser(null);
+                              Cookies.remove('hash');
+                          }}>
                         LOG OUT
                     </Link>
                 </Flex>

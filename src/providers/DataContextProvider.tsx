@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {DataContextType} from "../types/Types";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const DataContext = React.createContext<DataContextType>({} as DataContextType);
 
@@ -35,7 +36,9 @@ const DataContextProvider: React.FC = ({children}) => {
             })
         }
 
-        getDataFromApi();
+        if (Cookies.get('hash')) {
+            getDataFromApi();
+        }
 
         return () => {
             unmounted = true;

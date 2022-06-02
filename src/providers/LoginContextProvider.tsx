@@ -16,7 +16,6 @@ const LoginContextProvider: React.FC = ({children}) => {
         if (!hashToken) return;
 
         const getUserFromApi = async () => {
-
             const user = await axios.get(`${process.env.REACT_APP_API_URL}/api/social_user/${hashToken}`);
 
             if (!unmounted && user) {
@@ -24,7 +23,9 @@ const LoginContextProvider: React.FC = ({children}) => {
             }
         }
 
-        getUserFromApi();
+        if (Cookies.get('hash')) {
+            getUserFromApi();
+        }
 
         return () => {
             unmounted = true;
