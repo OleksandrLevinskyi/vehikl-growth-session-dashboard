@@ -49,3 +49,8 @@ export type NodeDictionary = {
 export type EdgeDictionary = {
     [key: string]: number,
 }
+
+export enum COLOR_MODE {
+    LIGHT = "light",
+    DARK = "dark"
+}

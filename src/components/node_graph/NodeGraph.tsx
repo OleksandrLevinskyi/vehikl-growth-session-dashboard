@@ -1,12 +1,12 @@
 import "./NodeGraph.css";
 import * as d3 from "d3";
 import React, {useContext, useEffect, useState} from "react";
-import {Center} from "@chakra-ui/react";
+import {Center, useColorMode} from "@chakra-ui/react";
 import CustomDrawer, {
     filterDataByMultipleNodesFilterSelection,
     filterDataBySpecificNodeFilterSelection
 } from "../custom_drawer/CustomDrawer";
-import {Node} from "../../types/Types";
+import {COLOR_MODE, Node} from "../../types/Types";
 import {useSearchParams} from "react-router-dom";
 import {DataContext} from "../../providers/DataContextProvider";
 import FilterButtons from "../filter_buttons/FilterButtons";
@@ -19,6 +19,8 @@ export const DRAWER_TYPE = {
 }
 
 const NodeGraph: React.FC = () => {
+    const {colorMode, toggleColorMode} = useColorMode();
+
     const {nodes, edgeDictionary, nodeDictionary, connections} = useContext(DataContext);
 
     const {currentDrawerType, setCurrentDrawerType, setIsDrawerOpen} = useContext(DrawerContext);
@@ -50,7 +52,7 @@ const NodeGraph: React.FC = () => {
 
     const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
         d3.select("#svg-container").selectChild().remove();
-        d3.select("#svg-container").append("svg");
+        d3.select("#svg-container").append("svg").classed(colorMode, true);
 
         const width = window.innerWidth;
         const height = window.innerHeight * .9;
@@ -70,7 +72,8 @@ const NodeGraph: React.FC = () => {
             .enter()
             .append("g");
 
-        const link = edge.append("line");
+        const link = edge.append("line")
+            .attr("stroke", colorMode === COLOR_MODE.DARK ? "#fff" : "#808080");
 
         const nodeGroup = svg.append("g")
             .attr("class", "nodes")
@@ -123,6 +126,7 @@ const NodeGraph: React.FC = () => {
 
         const edgeText = edge.append("text")
             .attr("class", "edge_text")
+            .attr("fill", colorMode === COLOR_MODE.DARK ? "#fff" : "#000")
             .text((d: any) => d.weight);
 
         const simulation = d3.forceSimulation()

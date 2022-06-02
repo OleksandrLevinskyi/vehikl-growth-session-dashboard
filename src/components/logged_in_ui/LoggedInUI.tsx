@@ -38,7 +38,7 @@ const LoggedInUI: React.FC = () => {
                             <Divider orientation="vertical"/>
 
                             <Login/>
-                            <ColorMode colorMode={colorMode} onClick={toggleColorMode}/>
+                            <ColorMode/>
                         </HStack>
                     </Flex>
 

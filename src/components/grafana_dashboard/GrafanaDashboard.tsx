@@ -4,6 +4,7 @@ import "react-dates/lib/css/_datepicker.css";
 import moment, {Moment} from "moment";
 import {Center, Flex} from "@chakra-ui/react";
 import CustomDatePicker from "../custom_date_picker/CustomDatePicker";
+import {COLOR_MODE} from "../../types/Types";
 
 export const DATE_FORMAT = "YYYY-MM-DD"
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
@@ -14,7 +15,7 @@ export const unixTimeStampToDate = (date: number) => moment.unix(date / 1000);
 export const formatDate = (date: Moment) => date.format(DATE_FORMAT);
 
 interface IGrafanaDashboardProps {
-    colorMode: "light" | "dark",
+    colorMode: COLOR_MODE
 }
 
 const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {

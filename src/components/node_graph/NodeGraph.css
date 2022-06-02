@@ -1,6 +1,13 @@
 #svg-container svg {
-    background: #111217;
     margin: auto;
+}
+
+.light {
+    background: #f4f5f5;
+}
+
+.dark {
+    background: #111217;
 }
 
 .filter-button {
@@ -8,7 +15,6 @@
 }
 
 .links line {
-    stroke: #fff;
     stroke-opacity: 0.6;
     stroke-width: 1;
 }
@@ -30,8 +36,4 @@ text {
     font-size: 5px;
     /*word-break: break-word;*/
     /*transform: translate(0, 50%);*/
-}
-
-.edge_text {
-    fill: #fff;
 }

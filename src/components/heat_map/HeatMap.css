@@ -8,6 +8,7 @@ text{
 
 .tooltip {
     background-color: white;
+    color: black;
     border: 2px solid;
     border-radius: 5px;
     padding: 5px;
