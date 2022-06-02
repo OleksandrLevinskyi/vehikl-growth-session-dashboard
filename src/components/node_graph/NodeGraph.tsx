@@ -51,13 +51,13 @@ const NodeGraph: React.FC = () => {
     }, [nodes])
 
     const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
-        d3.select("#svg-container").selectChild().remove();
-        d3.select("#svg-container").append("svg").classed(colorMode, true);
+        d3.select("#node-graph").selectChild().remove();
+        d3.select("#node-graph").append("svg").classed(colorMode, true);
 
         const width = window.innerWidth;
         const height = window.innerHeight * .9;
 
-        let svg: any = d3.select("#svg-container").selectChild();
+        let svg: any = d3.select("#node-graph").selectChild();
 
         svg.attr("width", width)
             .attr("height", height);
@@ -122,7 +122,7 @@ const NodeGraph: React.FC = () => {
 
         const zoom = d3.zoom()
             .on("zoom", (event: any) => svg.attr("transform", event.transform));
-        zoom(d3.select("#svg-container").selectChild());
+        zoom(d3.select("#node-graph").selectChild());
 
         const edgeText = edge.append("text")
             .attr("class", "edge_text")
@@ -163,7 +163,7 @@ const NodeGraph: React.FC = () => {
         <>
             <FilterButtons/>
 
-            <span id="svg-container" data-testid="node-graph">
+            <span id="node-graph" data-testid="node-graph">
                 <Center fontSize="xl" p="5">Use options above to generate a node graph.</Center>
             </span>
 

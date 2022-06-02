@@ -14,7 +14,7 @@ const ColorMode: React.FC = () => {
         // node graph styling changes
         d3.selectAll("line").attr("stroke", colorMode === COLOR_MODE.DARK ? "#808080" : "#fff");
         d3.selectAll(".edge_text").attr("fill", colorMode === COLOR_MODE.DARK ? "#000" : "#fff");
-        d3.select("#svg-container").selectChild().attr('class', colorMode === COLOR_MODE.LIGHT ? COLOR_MODE.DARK : COLOR_MODE.LIGHT);
+        d3.select("#node-graph").selectChild().attr('class', colorMode === COLOR_MODE.LIGHT ? COLOR_MODE.DARK : COLOR_MODE.LIGHT);
     }
 
     return <>
