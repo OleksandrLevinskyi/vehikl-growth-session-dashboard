@@ -5,6 +5,14 @@ import {DataContext} from "../../providers/DataContextProvider";
 
 const OFFSET = 150;
 
+function getCellColor(dataPoint: any, colorRange: any) {
+    if (dataPoint.source === dataPoint.target) {
+        return '#808080';
+    }
+
+    return dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight + OFFSET);
+}
+
 const HeatMap: React.FC = () => {
     const {nodes, edges, nodeDictionary, edgeDictionary} = useContext(DataContext);
 
@@ -68,6 +76,10 @@ const HeatMap: React.FC = () => {
             .attr("class", "tooltip");
 
         const mouseover = (event: any) => {
+            const cellData = event.target.__data__;
+
+            if (cellData.source === cellData.target) return;
+
             tooltip
                 .style("opacity", 1)
 
@@ -75,15 +87,23 @@ const HeatMap: React.FC = () => {
                 .style("stroke", "red")
                 .style("opacity", 1)
         }
+
         const mousemove = (event: any) => {
             const cellData = event.target.__data__;
+
+            if (cellData.source === cellData.target) return;
 
             tooltip
                 .html(`${nodeDictionary[cellData.source]} + ${nodeDictionary[cellData.target]}: ${cellData.weight}`)
                 .style("left", (d3.pointer(event)[0] + margin.tooltipLeft) + "px")
                 .style("top", (d3.pointer(event)[1] + margin.tooltipTop) + "px")
         }
+
         const mouseleave = (event: any) => {
+            const cellData = event.target.__data__;
+
+            if (cellData.source === cellData.target) return;
+
             tooltip
                 .style("opacity", 0)
 
@@ -102,7 +122,7 @@ const HeatMap: React.FC = () => {
             .attr("ry", 4)
             .attr("width", xScale.bandwidth())
             .attr("height", yScale.bandwidth())
-            .style("fill", (dataPoint: any) => dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight + OFFSET))
+            .style("fill", (dataPoint: any) => getCellColor(dataPoint, colorRange))
             .style("stroke-width", 4)
             .style("stroke", "none")
             .style("opacity", 0.8)
