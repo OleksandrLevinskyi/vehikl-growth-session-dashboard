@@ -170,7 +170,7 @@ export const filterDataBySpecificNodeFilterSelection = (specificNodeIdToFilterBy
 }
 
 export const getWeight = (nodeId: number, connectionId: number, edgeDictionary: any) => {
-    return (connectionId > nodeId ?
+    return (connectionId <= nodeId ?
         edgeDictionary[`${connectionId}_${nodeId}`] :
         edgeDictionary[`${nodeId}_${connectionId}`]) ?? 0;
 }
