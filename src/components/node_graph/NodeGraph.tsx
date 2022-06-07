@@ -19,7 +19,7 @@ export const DRAWER_TYPE = {
 }
 
 const NodeGraph: React.FC = () => {
-    const {colorMode, toggleColorMode} = useColorMode();
+    const {colorMode} = useColorMode();
 
     const {nodes, edgeDictionary, nodeDictionary, connections} = useContext(DataContext);
 
@@ -27,16 +27,20 @@ const NodeGraph: React.FC = () => {
 
     const [selectedNodeIdForDescription, setSelectedNodeIdForDescription] = useState<number>();
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     useEffect(() => {
         const specificNodeFilter = searchParams.get("sn");
         const multipleNodeFilter = searchParams.get("mn");
 
         if (nodes) {
+            if (!areQueryParamsValid()) {
+                return;
+            }
+
             if (specificNodeFilter) {
-                const querySpecificNodeId = specificNodeFilter;
-                const filteredData = filterDataBySpecificNodeFilterSelection(Number(querySpecificNodeId), nodeDictionary, connections, edgeDictionary);
+                const querySpecificNodeId = Number(specificNodeFilter);
+                const filteredData = filterDataBySpecificNodeFilterSelection(querySpecificNodeId, nodeDictionary, connections, edgeDictionary);
 
                 setCurrentDrawerType(DRAWER_TYPE.SPECIFIC_NODE);
                 loadNewNodeGraph(filteredData, DRAWER_TYPE.SPECIFIC_NODE)
@@ -49,6 +53,18 @@ const NodeGraph: React.FC = () => {
             }
         }
     }, [nodes])
+
+    const areQueryParamsValid = (): boolean => {
+        if (!nodeDictionary) {
+            return false;
+        }
+
+        const specificNodeFilter = searchParams.get("sn");
+        const multipleNodeFilter = searchParams.get("mn");
+
+        return !!((specificNodeFilter && nodeDictionary[specificNodeFilter]) ||
+            (multipleNodeFilter && multipleNodeFilter.split(".").filter((id: string) => !nodeDictionary[id]).length === 0));
+    }
 
     const loadNewNodeGraph = (data: any, displayMode = currentDrawerType) => {
         d3.select("#node-graph").selectChild().remove();
@@ -163,9 +179,12 @@ const NodeGraph: React.FC = () => {
         <>
             <FilterButtons/>
 
-            <span id="node-graph" data-testid="node-graph">
+            {
+                !areQueryParamsValid() &&
                 <Center fontSize="xl" p="5">Use options above to generate a node graph.</Center>
-            </span>
+            }
+
+            <span id="node-graph" data-testid="node-graph"/> :
 
             <CustomDrawer
                 selectedNodeIdForDescription={selectedNodeIdForDescription}
