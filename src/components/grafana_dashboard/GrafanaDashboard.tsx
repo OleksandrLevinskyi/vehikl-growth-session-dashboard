@@ -5,6 +5,7 @@ import moment, {Moment} from "moment";
 import {Center, Flex} from "@chakra-ui/react";
 import CustomDatePicker from "../custom_date_picker/CustomDatePicker";
 import {COLOR_MODE} from "../../types/Types";
+import axios from "axios";
 
 export const DATE_FORMAT = "YYYY-MM-DD"
 export const MIN_DATE = moment().year(2020).month(4).date(21).hours(0).minutes(0).seconds(0);
@@ -22,6 +23,29 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
     const [startDate, setStartDate] = useState(MIN_DATE);
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
+
+    const [htmlFile, setHtmlFile] = useState();
+
+    useEffect(() => {
+
+        const autheticate = async () => {
+            try {
+                const response = await axios.get(process.env.REACT_APP_GRAFANA_DASHBOARD_URL ?? "",
+                    {
+                        headers: {
+                            'Authorization': "token"
+                        }
+                    });
+
+                setHtmlFile(response.data);
+            } catch(e) {
+                console.log('error:', e)
+            }
+        }
+
+        autheticate();
+
+    }, []);
 
     useEffect(() => {
         getDashboardLink();
@@ -56,11 +80,11 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
                 </Flex>
             </span>
 
-            {
-                dashboardLink ?
-                    <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
-                    <Center fontSize="xl" p="5">Please select a valid date range.</Center>
-            }
+            {/*{*/}
+            {/*    dashboardLink ?*/}
+            {/*        <iframe src={`${process.env.REACT_APP_GRAFANA_DASHBOARD_URL}`} srcDoc={htmlFile} data-testid="dashboard-iframe"/> :*/}
+            {/*        <Center fontSize="xl" p="5">Please select a valid date range.</Center>*/}
+            {/*}*/}
         </>
     );
 }
