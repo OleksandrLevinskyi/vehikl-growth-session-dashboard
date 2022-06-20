@@ -24,28 +24,7 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
 
-    const [htmlFile, setHtmlFile] = useState();
-
-    useEffect(() => {
-
-        const autheticate = async () => {
-            try {
-                const response = await axios.get(process.env.REACT_APP_GRAFANA_DASHBOARD_URL ?? "",
-                    {
-                        headers: {
-                            'Authorization': "token"
-                        }
-                    });
-
-                setHtmlFile(response.data);
-            } catch(e) {
-                console.log('error:', e)
-            }
-        }
-
-        autheticate();
-
-    }, []);
+    const [htmlFile, setHtmlFile] = useState(null);
 
     useEffect(() => {
         getDashboardLink();
@@ -80,11 +59,11 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
                 </Flex>
             </span>
 
-            {/*{*/}
-            {/*    dashboardLink ?*/}
-            {/*        <iframe src={`${process.env.REACT_APP_GRAFANA_DASHBOARD_URL}`} srcDoc={htmlFile} data-testid="dashboard-iframe"/> :*/}
-            {/*        <Center fontSize="xl" p="5">Please select a valid date range.</Center>*/}
-            {/*}*/}
+            {
+                dashboardLink ?
+                    <iframe src='http://localhost:3000/auth' data-testid="dashboard-iframe"/> :
+                    <Center fontSize="xl" p="5">Please select a valid date range.</Center>
+            }
         </>
     );
 }
