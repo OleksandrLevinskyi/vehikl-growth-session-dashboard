@@ -3,14 +3,14 @@ import * as d3 from 'd3';
 import React, {useContext, useEffect} from "react";
 import {DataContext} from "../../providers/DataContextProvider";
 
-const OFFSET = 150;
+let colorOffset = 0;
 
 function getCellColor(dataPoint: any, colorRange: any) {
     if (dataPoint.source === dataPoint.target) {
         return '#808080';
     }
 
-    return dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight + OFFSET);
+    return dataPoint.weight === 0 ? '#ff3333' : colorRange(dataPoint.weight + colorOffset);
 }
 
 const HeatMap: React.FC = () => {
@@ -66,9 +66,11 @@ const HeatMap: React.FC = () => {
 
         const maxWeight = d3.max(Object.keys(edgeDictionary).map((key: string) => edgeDictionary[key])) ?? 0;
 
+        colorOffset = maxWeight / 2;
+
         const colorRange = d3.scaleSequential()
             .interpolator(d3.interpolateGreens)
-            .domain([1, maxWeight + OFFSET]);
+            .domain([1, maxWeight + colorOffset]);
 
         const tooltip = d3.select("#heat-map")
             .append("div")
