@@ -24,13 +24,13 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
     const [endDate, setEndDate] = useState(MAX_DATE);
     const [dashboardLink, setDashboardLink] = useState<string | null>();
 
-    const [htmlFile, setHtmlFile] = useState(null);
+    const [isGrafanaAuthenticated, setIsGrafanaAuthenticated] = useState(false);
 
     useEffect(() => {
         getDashboardLink();
     }, [colorMode]);
 
-    function getDashboardLink() {
+    const getDashboardLink = () => {
         if (!startDate || !endDate) {
             setDashboardLink(null)
             return;
@@ -48,6 +48,24 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
         getDashboardLink();
     }, [endDate, startDate])
 
+    useEffect(() => {
+        const autheticate = async () => {
+            try {
+                await axios.post(`${process.env.REACT_APP_GRAFANA_PROXY_URL}/login` ?? "",
+                    {
+                        "user": process.env.REACT_APP_GRAFANA_USER,
+                        "password": process.env.REACT_APP_GRAFANA_PASSWORD
+                    });
+
+                setIsGrafanaAuthenticated(true);
+            } catch (e) {
+                console.log('error:', e)
+            }
+        }
+
+        autheticate();
+    }, []);
+
     return (
         <>
             <span data-testid="custom-date-picker">
@@ -60,8 +78,8 @@ const GrafanaDashboard: React.FC<IGrafanaDashboardProps> = ({colorMode}) => {
             </span>
 
             {
-                dashboardLink ?
-                    <iframe src='http://localhost:3000/auth' data-testid="dashboard-iframe"/> :
+                dashboardLink && isGrafanaAuthenticated ?
+                    <iframe src={dashboardLink} data-testid="dashboard-iframe"/> :
                     <Center fontSize="xl" p="5">Please select a valid date range.</Center>
             }
         </>
