@@ -5,7 +5,7 @@ import {DataContext} from "../../providers/DataContextProvider";
 
 let colorOffset = 0;
 
-function getCellColor(dataPoint: any, colorRange: any) {
+const getCellColor = (dataPoint: any, colorRange: any) => {
     if (dataPoint.source === dataPoint.target) {
         return '#808080';
     }
