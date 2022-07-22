@@ -3,10 +3,11 @@ import React, {useContext} from "react";
 import {LoginContext} from "../../providers/LoginContextProvider";
 import {BsGithub} from "react-icons/bs";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 const Login: React.FC = () => {
 
-    const {loggedInUser, setLoggedInUser} = useContext(LoginContext);
+    const {loggedInUser, setLoggedInUser, setIsGrafanaAuthenticated} = useContext(LoginContext);
 
     return <>
         {
@@ -30,6 +31,19 @@ const Login: React.FC = () => {
                     <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}
                           onClick={() => {
                               setLoggedInUser(null);
+
+                              const logoutFromGrafana = async () => {
+                                  try {
+                                      await axios.get(`${process.env.REACT_APP_GRAFANA_PROXY_URL}/logout` ?? "");
+
+                                      setIsGrafanaAuthenticated(false);
+                                  } catch (e) {
+                                      console.log('error:', e)
+                                  }
+                              }
+
+                              logoutFromGrafana();
+
                               Cookies.remove('hash');
                           }}>
                         LOG OUT

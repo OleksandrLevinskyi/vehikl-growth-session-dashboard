@@ -8,6 +8,7 @@ export const LoginContext = React.createContext<LoginContextType>({} as LoginCon
 const LoginContextProvider: React.FC = ({children}) => {
 
     const [loggedInUser, setLoggedInUser] = useState<User | null>();
+    const [isGrafanaAuthenticated, setIsGrafanaAuthenticated] = useState(false);
 
     useEffect(() => {
         const hashToken = Cookies.get('hash');
@@ -33,7 +34,7 @@ const LoginContextProvider: React.FC = ({children}) => {
     }, []);
 
     return (
-        <LoginContext.Provider value={{loggedInUser, setLoggedInUser}}>
+        <LoginContext.Provider value={{loggedInUser, setLoggedInUser, isGrafanaAuthenticated, setIsGrafanaAuthenticated}}>
             {children}
         </LoginContext.Provider>
     );

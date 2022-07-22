@@ -40,6 +40,8 @@ export type DrawerContextType = {
 export type LoginContextType = {
     loggedInUser: any,
     setLoggedInUser: any,
+    isGrafanaAuthenticated: boolean,
+    setIsGrafanaAuthenticated: any,
 }
 
 export type NodeDictionary = {
