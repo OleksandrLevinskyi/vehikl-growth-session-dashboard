@@ -3,8 +3,7 @@ import {
     Flex,
     Heading,
     Spacer,
-    useColorMode,
-    HStack, Divider
+    HStack, Divider, IconButton, Link
 } from "@chakra-ui/react";
 import {Link as RouteLink} from "react-router-dom";
 import DataContextProvider from "../../providers/DataContextProvider";
@@ -12,10 +11,9 @@ import DrawerContextProvider from "../../providers/DrawerContextProvider";
 import RouterProvider from "../router_provider/RouterProvider";
 import Login from "../login/Login";
 import ColorMode from "../color_mode/ColorMode";
+import {EmailIcon} from "@chakra-ui/icons";
 
 const LoggedInUI: React.FC = () => {
-    const {colorMode, toggleColorMode} = useColorMode();
-
     return (
         <DataContextProvider>
             <DrawerContextProvider>
@@ -40,6 +38,14 @@ const LoggedInUI: React.FC = () => {
                             <Login/>
                             <ColorMode/>
                         </HStack>
+
+                        <Link href={"https://forms.gle/bZP3qBYN9GsdK9hs7"} isExternal>
+                            <IconButton
+                                ms={5}
+                                aria-label={"Info Icon"}
+                                size="lg"
+                                icon={<EmailIcon/>}/>
+                        </Link>
                     </Flex>
 
                     <Divider/>
