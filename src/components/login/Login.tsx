@@ -2,8 +2,6 @@ import {Button, Center, Flex, Image, Link} from "@chakra-ui/react";
 import React, {useContext} from "react";
 import {LoginContext} from "../../providers/LoginContextProvider";
 import {BsGithub} from "react-icons/bs";
-import Cookies from "js-cookie";
-import axios from "axios";
 
 const Login: React.FC = () => {
 
@@ -31,20 +29,7 @@ const Login: React.FC = () => {
                     <Link color="light-blue" size="large" padding={3} href={`${process.env.REACT_APP_API_URL}/logout`}
                           onClick={() => {
                               setLoggedInUser(null);
-
-                              const logoutFromGrafana = async () => {
-                                  try {
-                                      await axios.get(`${process.env.REACT_APP_GRAFANA_PROXY_URL}/logout` ?? "");
-
-                                      setIsGrafanaAuthenticated(false);
-                                  } catch (e) {
-                                      console.log('error:', e)
-                                  }
-                              }
-
-                              logoutFromGrafana();
-
-                              Cookies.remove('hash');
+                              setIsGrafanaAuthenticated(false);
                           }}>
                         LOG OUT
                     </Link>
