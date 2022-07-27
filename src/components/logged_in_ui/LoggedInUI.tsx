@@ -39,7 +39,7 @@ const LoggedInUI: React.FC = () => {
                             <ColorMode/>
                         </HStack>
 
-                        <Link href={"https://forms.gle/bZP3qBYN9GsdK9hs7"} isExternal>
+                        <Link href={process.env.REACT_APP_FEEDBACK_FORM_URL} isExternal>
                             <IconButton
                                 ms={5}
                                 aria-label={"Info Icon"}
